@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183b2d">
+  <meta name="description" content="AlmanacPhi: an evidence-first, offline-capable planting calendar, crop guide, sun and moon explorer, and personal garden journal.">
+  <title>AlmanacΦ | Grow with the seasons</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Almanac Phi home"><span class="brand-mark">Φ</span><span>Almanac<span class="brand-phi">Phi</span></span></a>
+    <nav class="topnav" aria-label="Main navigation">
+      <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#journal">My garden</a><a href="#field-notes">Field notes</a>
+    </nav>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.1</span>
+  </header>
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="tiny-sun">✳</span> FIELD GUIDE / ALL SEASONS</p>
+        <h1>Grow with<br><em>the rhythms.</em></h1>
+        <p class="lede">Know what to plant, when to plant it, and how to help it thrive. A practical farmer’s almanac with the sun overhead, the moon in view, and science underfoot.</p>
+        <div class="hero-actions"><a class="button primary" href="#calendar">Plan your season <span aria-hidden="true">↗</span></a><a class="button secondary" href="#crops">Explore 19 crops</a></div>
+        <p class="hero-caveat">Built for Northern Hemisphere gardens · No account · Garden records stay on this device</p>
+      </div>
+      <div class="hero-art" role="img" aria-label="Illustration of terraced fields, seedlings, hills, and the sun">
+        <div class="art-sun"></div><div class="art-cloud art-cloud-a"></div><div class="art-cloud art-cloud-b"></div>
+        <div class="mountain m1"></div><div class="mountain m2"></div>
+        <div class="hill hill-back"></div><div class="hill hill-mid"></div><div class="hill hill-front"></div>
+        <div class="rows-field"></div>
+        <div class="sprout sprout-a"><i></i></div><div class="sprout sprout-b"><i></i></div><div class="sprout sprout-c"><i></i></div>
+        <div class="art-stamp">GROW SOMETHING<br>GOOD TODAY <span>✳</span></div>
+      </div>
+    </section>
+    <section class="dashboard section-wrap" aria-label="Sky and season">
+      <div class="section-heading"><div><p class="eyebrow">THE FIELD RIGHT NOW</p><h2>Today's natural rhythms</h2></div><span id="dateLabel" class="date-chip">—</span></div>
+      <div class="rhythm-grid">
+        <article class="rhythm-card"><div class="rhythm-meta"><span class="icon-label">◒</span> LUNAR CYCLE</div><div class="moon-row"><div id="moonVisual" class="moon-disc" aria-hidden="true"></div><div><strong id="moonName">—</strong><p id="moonDetail">—</p></div></div><p class="card-foot">Moon phase is an astronomical estimate, not a proven planting rule.</p></article>
+        <article class="rhythm-card"><div class="rhythm-meta"><span class="icon-label">☼</span> DAYLIGHT</div><div class="big-number" id="daylightValue">—</div><div class="mini-progress"><span id="daylightBar"></span></div><p id="daylightNote" class="card-foot">Approximate daylight at the chosen latitude.</p></article>
+        <article class="rhythm-card"><div class="rhythm-meta"><span class="icon-label">✳</span> SEASON</div><div class="big-season" id="seasonValue">—</div><p class="season-desc" id="seasonAdvice">—</p><p class="card-foot">Astronomical season · Northern Hemisphere</p></article>
+      </div>
+    </section>
+    <section id="calendar" class="section-wrap planner-section">
+      <div class="section-heading"><div><p class="eyebrow">01 / GET GROUNDED</p><h2>Your planting calendar</h2><p class="section-intro">Adjust these dates to your garden’s average frost calendar. They are <b>examples only</b>, not location lookup results.</p></div></div>
+      <div class="calendar-layout">
+        <aside class="settings-panel">
+          <div class="panel-heading"><h3>Garden settings</h3><span class="small-tag">LOCAL ONLY</span></div>
+          <form id="settingsForm">
+            <label for="gardenName">Garden name</label><input id="gardenName" maxlength="60" placeholder="My garden" autocomplete="off">
+            <label for="preset">Example growing season</label><select id="preset"><option value="custom">Custom dates</option><option value="temperate">Temperate · example</option><option value="mild">Mild winter · example</option><option value="short">Short season · example</option></select>
+            <div class="two-fields"><div><label for="lastFrost">Last spring frost</label><input id="lastFrost" type="text" inputmode="numeric" placeholder="MM-DD" maxlength="5" required pattern="(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"></div><div><label for="firstFrost">First fall frost</label><input id="firstFrost" type="text" inputmode="numeric" placeholder="MM-DD" maxlength="5" required pattern="(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"></div></div>
+            <label for="latitude">Latitude (0–70° N)</label><input id="latitude" type="number" min="0" max="70" step="0.1" required><p class="input-help">Used only to estimate daylight. It does not determine your frost dates or location.</p>
+            <button type="submit" class="button dark full">Save garden settings</button><p id="settingsMessage" class="form-message" role="status"></p>
+          </form>
+          <div class="caution"><b>Remember:</b> USDA hardiness zones describe winter minimums for perennials. They are <em>not</em> first/last frost dates. Confirm dates with local extension and weather records.</div>
+        </aside>
+        <div class="calendar-main">
+          <div class="calendar-toolbar"><div><h3 id="calendarTitle">Planting windows</h3><p id="calendarSubtitle">Approximate windows based on your dates</p></div><div class="month-control"><button id="prevMonth" type="button" aria-label="Previous month">‹</button><input id="monthPicker" type="month" aria-label="Calendar month"><button id="nextMonth" type="button" aria-label="Next month">›</button></div></div>
+          <div id="seasonStrip" class="season-strip" aria-label="Month picker"></div>
+          <div class="legend"><span><i class="legend-dot indoor"></i> Start indoors</span><span><i class="legend-dot direct"></i> Direct sow</span><span><i class="legend-dot transplant"></i> Transplant / set out</span></div>
+          <div id="calendarResults" class="calendar-results" aria-live="polite"></div>
+          <p class="data-note">These are broad frost-relative planning estimates. Check the seed packet, soil temperature, forecast, and local extension before planting. Fall crops often need extra time as daylight decreases.</p>
+        </div>
+      </div>
+    </section>
+    <section id="crops" class="section-wrap crop-section">
+      <div class="section-heading"><div><p class="eyebrow">02 / KNOW YOUR PLANTS</p><h2>The crop library</h2><p class="section-intro">Practical growing instructions from seed to harvest. Select a crop for the full guide.</p></div></div>
+      <div class="crop-tools"><label class="search-wrap"><span aria-hidden="true">⌕</span><input id="cropSearch" type="search" placeholder="Search vegetables, herbs, and flowers…" aria-label="Search crops"></label><select id="cropFilter" aria-label="Filter crops"><option value="all">All crops</option><option value="warm">Warm season</option><option value="cool">Cool season</option></select></div>
+      <div id="cropGrid" class="crop-grid"></div>
+      <p id="cropCount" class="subtle"></p>
+    </section>
+    <section id="journal" class="section-wrap journal-section">
+      <div class="section-heading"><div><p class="eyebrow">03 / MAKE IT PERSONAL</p><h2>My garden journal</h2><p class="section-intro">Log what you planted, where you planted it, and what happened next. Entries are saved only in this browser.</p></div></div>
+      <div class="journal-layout">
+        <form id="journalForm" class="journal-form">
+          <h3>Add a planting</h3>
+          <label for="plantCrop">Crop</label><select id="plantCrop" required></select>
+          <div class="two-fields"><div><label for="plantDate">Planting date</label><input id="plantDate" type="date" required></div><div><label for="plantBed">Bed / location</label><input id="plantBed" maxlength="70" placeholder="Raised bed A"></div></div>
+          <label for="plantNote">Field notes</label><textarea id="plantNote" rows="3" maxlength="500" placeholder="Soil, variety, weather, observations…"></textarea>
+          <button type="submit" class="button primary full">Add to my garden +</button><p id="journalMessage" class="form-message" role="status"></p>
+        </form>
+        <div class="journal-list-wrap"><div class="journal-list-heading"><h3>Growing log <span id="gardenCount" class="count-bubble">0</span></h3><div class="journal-actions"><button id="exportJournal" type="button" class="link-button">Export JSON</button><button id="clearJournal" type="button" class="link-button danger">Clear all</button></div></div><div id="journalList" class="journal-list"></div></div>
+      </div>
+    </section>
+    <section id="field-notes" class="section-wrap learning-section">
+      <div class="section-heading"><div><p class="eyebrow">04 / GROWING WISDOM</p><h2>Read the field, not just the calendar</h2><p class="section-intro">A reliable grower watches several systems at once. Here is what changes your plants’ chances.</p></div></div>
+      <div class="learning-grid">
+        <article class="learn-card"><div class="learn-icon">☼</div><h3>Sun & day length</h3><p>Sunlight powers photosynthesis. Most fruiting crops need 6–8+ hours of direct sun; leafy crops can often manage less. Day length shifts with latitude and season, affecting flowering and crop development.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
+        <article class="learn-card"><div class="learn-icon">♧</div><h3>Soil & water</h3><p>Check soil temperature before sowing. Start with a soil test, add organic matter when appropriate, mulch to moderate moisture and temperature, and water at the root zone instead of on a rigid schedule.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
+        <article class="learn-card"><div class="learn-icon">❄</div><h3>Frost & microclimates</h3><p>Average frost dates describe risk, not a promise. Cold pockets, elevation, wind, slopes, and buildings all matter. Harden off seedlings and monitor forecasts near the edges of your season.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
+        <article class="learn-card"><div class="learn-icon">◕</div><h3>The Moon & traditions</h3><p>Lunar phases are real and predictable. Planting above-ground crops while waxing and roots while waning is a traditional practice, but reliable evidence that moon phase improves yields is lacking. Garden by conditions first.</p><span class="tradition">TRADITION, NOT VALIDATED</span></article>
+        <article class="learn-card"><div class="learn-icon">✿</div><h3>Living ecosystems</h3><p>Observe pests before treating. Encourage pollinators and natural enemies, rotate plant families where practical, remove diseased material, and use integrated pest management rather than routine sprays.</p><span class="evidence">ESTABLISHED PRACTICE</span></article>
+        <article class="learn-card"><div class="learn-icon">↺</div><h3>Observe & adapt</h3><p>Record varieties, sowing dates, soil conditions, and harvests. A local journal improves your planting estimates across years, because no national calendar knows every patch of ground.</p><span class="evidence">GROWER'S METHOD</span></article>
+      </div>
+      <div class="moon-tradition"><span class="moon-tradition-mark">◐</span><div><h3>Lunar planting, without pretending folklore is physics</h3><p id="traditionNote">—</p><p>Use the moon cycle as an optional observation ritual, never as a reason to miss a safe soil- or weather-based planting window.</p></div></div>
+    </section>
+    <section class="sources section-wrap"><div><p class="eyebrow">THE RECEIPTS</p><h2>Sources & scope</h2><p>This first release is a Northern Hemisphere, U.S.-oriented planning tool. Its dates are editable examples and relative crop windows, not forecasts, live frost records, or location-certified advice. Moon and daylight estimates are approximate astronomical calculations. Consult your local extension office for cultivar-specific guidance.</p></div><ul><li><a target="_blank" rel="noopener noreferrer" href="https://planthardiness.ars.usda.gov/">USDA · Plant Hardiness Zone Map</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.colostate.edu/resource/vegetable-planting-guide/">CSU Extension · Vegetable Planting Guide</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.rutgers.edu/fs787">Rutgers Extension · Starting Vegetable Seeds</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.ucanr.edu/program/uc-master-gardener-program/time-planting">UC Master Gardeners · Time of Planting</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.mdpi.com/2073-4395/10/7/955">Review · Moon phases and plant physiology</a></li></ul></section>
+  </main>
+  <footer class="site-footer"><div class="footer-brand">Almanac<span>Φ</span></div><p>Grow knowledge. Share the harvest. Keep the field open.</p><a target="_blank" rel="noopener noreferrer" href="https://github.com/MichaelWave369/AlmanacPhi">Open-source on GitHub ↗</a></footer>
+  <dialog id="cropDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><p class="eyebrow">THE CROP FIELD GUIDE</p><button type="button" id="dialogClose" class="dialog-close" aria-label="Close crop guide">×</button></div><div id="dialogBody"></div></dialog>
+</body>
+</html>
