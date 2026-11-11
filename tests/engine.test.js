@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {CROPS,CROP_BY_ID} from "../crop-data.js";
-import {DEFAULT_SETTINGS,parseISO,iso,addDays,mmddToDate,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,seasonFor,monthShift} from "../engine.js";
+import {DEFAULT_SETTINGS,parseISO,iso,addDays,mmddToDate,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,seasonFor,monthShift,moonIlluminatedPath} from "../engine.js";
 test("all crop IDs and schedule windows are usable",()=>{
   assert.equal(CROPS.length,19);
   assert.equal(new Set(CROPS.map(x=>x.id)).size,CROPS.length);
@@ -67,4 +67,21 @@ test("seasons and month navigation wrap correctly",()=>{
   assert.equal(seasonFor(parseISO("2026-01-01")),"Winter");
   assert.deepEqual(monthShift(2026,11,1),{year:2027,month:0});
   assert.deepEqual(monthShift(2026,0,-1),{year:2025,month:11});
+});
+
+test("lunar illustration matches actual illumination for waxing and waning phases",()=>{
+  const litArea=phase=>{
+    const coords=[...moonIlluminatedPath(phase).matchAll(/(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)/g)].map(m=>[Number(m[1]),Number(m[2])]);
+    let doubleArea=0;
+    for(let i=0;i<coords.length;i++){
+      const a=coords[i],b=coords[(i+1)%coords.length];
+      doubleArea+=a[0]*b[1]-b[0]*a[1];
+    }
+    return Math.abs(doubleArea)/2/(Math.PI*47*47);
+  };
+  for(const phase of [0,.125,.25,.375,.49,.5,.51,.625,.75,.875,.99]){
+    const expected=(1-Math.cos(2*Math.PI*phase))/2;
+    assert.ok(Math.abs(litArea(phase)-expected)<.015,`Mismatch for phase ${phase}`);
+  }
+  assert.throws(()=>moonIlluminatedPath(NaN),TypeError);
 });

@@ -93,3 +93,19 @@ export function lunarTradition(phase){
   if(phase<.5)return "Traditional lunar planting suggests sowing above-ground crops during the waxing Moon. This is a cultural practice, not a scientifically established yield advantage.";
   return "Traditional lunar planting suggests roots and bulbs during the waning Moon. This is a cultural practice, not a scientifically established yield advantage.";
 }
+
+// Generates the illuminated part of a lunar disc for the visual display.
+// Waxing illuminates from the right, waning from the left. At each phase,
+// the filled polygon's approximate area matches (1 - cos(2*pi*phase))/2.
+export function moonIlluminatedPath(phase){
+  if(!Number.isFinite(phase))throw new TypeError("Expected a finite moon phase");
+  const normalized=((phase%1)+1)%1;
+  const r=47,center=50,c=Math.cos(2*Math.PI*normalized),waxing=normalized<=.5;
+  const edge=[],terminator=[];
+  for(let i=0;i<=100;i++){
+    const y=-1+2*i/100,spread=r*Math.sqrt(Math.max(0,1-y*y));
+    edge.push(`${(center+(waxing?spread:-spread)).toFixed(2)},${(center+r*y).toFixed(2)}`);
+    terminator.push(`${(center+(waxing?c:-c)*spread).toFixed(2)},${(center+r*y).toFixed(2)}`);
+  }
+  return `M ${edge.join(" L ")} L ${terminator.reverse().join(" L ")} Z`;
+}
