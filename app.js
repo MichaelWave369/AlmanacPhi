@@ -1,4 +1,5 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
+import {initPreservation,showCropPreservation} from "./preservation-ui.js";
 import {DEFAULT_SETTINGS,PRESETS,parseISO,iso,addDays,formatted,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,monthShift,seasonFor,seasonTip,lunarTradition,moonIlluminatedPath} from "./engine.js";
 const $=id=>document.getElementById(id);
 const STORAGE_SETTINGS="almanacphi.settings.v1",STORAGE_GARDEN="almanacphi.garden.v1";
@@ -99,7 +100,9 @@ function openCrop(crop){
     <div class="detail-section"><h3>Water & feeding</h3><p>${safe(crop.water)} ${safe(crop.feed)}</p></div>
     <div class="detail-section"><h3>Harvesting</h3><p>${safe(crop.harvest)}</p></div>
     <div class="detail-section"><h3>Watch for</h3><p>${safe(crop.issues)}</p></div>
-    <div class="detail-section"><h3>Field wisdom</h3><p>${safe(crop.extra)}</p><p style="margin-top:10px;font-size:11px">*Days to maturity are rough variety-dependent reference figures. Seed packets may count from transplant rather than sowing.</p></div>`;
+    <div class="detail-section"><h3>Field wisdom</h3><p>${safe(crop.extra)}</p><p style="margin-top:10px;font-size:11px">*Days to maturity are rough variety-dependent reference figures. Seed packets may count from transplant rather than sowing.</p></div>
+    <button type="button" class="button dark full" data-open-preservation>How to preserve this harvest ↗</button>`;
+  $("dialogBody").querySelector("[data-open-preservation]")?.addEventListener("click",()=>showCropPreservation(crop.id));
   $("cropDialog").showModal();
 }
 function renderJournal(){
@@ -168,6 +171,7 @@ function init(){
     garden=[];saveGarden();renderJournal();message("journalMessage","Journal cleared.");
   });
   renderAll();
+  initPreservation();
   if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 }
 init();

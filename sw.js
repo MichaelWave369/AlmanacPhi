@@ -1,5 +1,5 @@
-const CACHE="almanacphi-v1";
-const CORE=["./","./index.html","./styles.css","./app.js","./engine.js","./crop-data.js"];
+const CACHE="almanacphi-v2";
+const CORE=["./","./index.html","./styles.css","./app.js","./engine.js","./crop-data.js","./preservation-data.js","./preservation-ui.js"];
 self.addEventListener("install",e=>{
   e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
 });
