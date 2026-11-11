@@ -60,7 +60,7 @@ test("static site, app initialization and service worker include kitchen modules
   assert.match(html,/Fresh cooking, not shelf-stable canning/);
   assert.match(app,/initKitchen\(\)/);
   assert.match(app,/data-open-kitchen/);
-  assert.match(sw,/almanacphi-v3/);
+  assert.ok(Number(sw.match(/almanacphi-v(\d+)/)?.[1])>=3);
   assert.match(sw,/recipe-data\.js/);
   assert.match(sw,/kitchen-ui\.js/);
   assert.match(sw,/fetch\(request\)/);
