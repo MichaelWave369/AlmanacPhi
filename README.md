@@ -4,9 +4,11 @@
 
 AlmanacPhi is a free, open-source farmer's almanac built as a lightweight offline-capable web app. It helps gardeners decide **what to plant, when to plant it, how to care for it**, and how to notice the changing seasons, sun and Moon without confusing traditions for validated horticultural science.
 
-## What's in v0.1
+## What's in v0.2
 
 - **19 crop guides**: vegetables, herbs, flowers, and roots, with seed depth, spacing, light, soil temperatures, water, feeding, harvest, common issues, and growing tips.
+- **Harvest-to-pantry preservation library**: 8 research-linked method guides, crop-specific pathways across all 19 crops, canning safety boundaries and seed-saving guidance.
+- **Private pantry ledger**: record preservation batches and export their JSON history; shelf-stable canning entries require a recipe URL for the log (not a guarantee of process safety).
 - **Editable planting calendar**: crop windows calculated relative to your manually entered last spring and first fall frost dates.
 - **Sunlight explorer**: approximate day length calculated from an editable Northern Hemisphere latitude.
 - **Lunar explorer**: approximate phase, illumination, and waxing/waning status with lunar planting tradition clearly identified as unproven folklore.
@@ -48,6 +50,10 @@ Node.js 20+ is enough. No `npm install` is required.
 5. Record what you plant in the journal. Make regular JSON exports if the records matter to you; browser storage may be cleared by the device or browser.
 
 **Critical limitations:** USDA plant hardiness zones indicate average extreme winter minimum temperatures for *perennial* survivability. They do not provide exact frost dates. Crop calendars are heuristics, not local weather forecasts or guarantees. Fall crops may require extra maturation time as daylight shortens. Days to maturity vary by cultivar and may be measured from transplant or sowing. No pesticide or chemical treatment instructions are implied.
+
+## Preservation evidence standard
+
+The new preservation section separates general growing/pantry education from **process-validated shelf-stable canning**. There are **no invented recipe amounts or generalized jar-processing times**. Low-acid foods require specific tested pressure-canning instructions, and acidified foods require the prescribed vinegar/lemon/citric acid and an altitude-correct processing schedule. An inventory entry does not establish safety. See [the preservation guide](./PRESERVATION.md) and the directly linked NCHFP/Extension references.
 
 ## Moon / sun evidence standard
 
