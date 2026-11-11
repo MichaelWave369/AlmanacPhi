@@ -48,3 +48,53 @@
 @media(max-width:1100px){.preserve-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:850px){.preserve-grid{grid-template-columns:repeat(2,1fr)}.pantry-layout{grid-template-columns:1fr}}
 @media(max-width:560px){.preservation-section{padding:48px 16px}.preserve-grid{grid-template-columns:1fr}.preserve-toolbar{flex-direction:column;align-items:stretch}.preserve-toolbar label{min-width:0}.preserve-explore,.pantry-form,.pantry-list-wrap{padding:17px}.preserve-alert{padding:13px}.preserve-card{min-height:165px}.preserve-dialog-header h2{font-size:28px}}
+
+
+/* Harvest Kitchen v0.3 */
+.kitchen-section{padding-top:70px}
+.kitchen-safety-banner{border:1px solid #c4d1bc;border-left:5px solid #6a8d65;border-radius:9px;background:#f0f4e9;padding:17px 20px;font-size:13px;line-height:1.7;color:#425b47;margin:0 0 24px}
+.kitchen-safety-banner a{color:var(--forest);font-weight:800}
+.kitchen-filters{display:grid;grid-template-columns:minmax(250px,1fr) 195px 155px;gap:12px;align-items:end;margin-bottom:19px}
+.kitchen-select-label{display:flex;flex-direction:column;gap:6px;color:var(--forest);font-size:11px;font-weight:800}
+.kitchen-select-label select{width:100%;padding:13px 12px;min-height:47px;border-radius:8px;border:1px solid var(--line);background:var(--paper);font-size:13px;color:var(--ink)}
+.kitchen-recipe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.kitchen-recipe-card{display:flex;flex-direction:column;gap:10px;text-align:left;background:var(--paper);border-radius:11px;border:1px solid var(--line);padding:20px;min-height:218px;transition:box-shadow .12s,transform .12s,border-color .12s}
+.kitchen-recipe-card:hover{transform:translateY(-2px);border-color:#a5b997;box-shadow:var(--shadow)}
+.recipe-sticker{font-size:10px;color:var(--rust);font-weight:850;letter-spacing:.09em}
+.kitchen-recipe-card strong{font-family:Georgia,"Times New Roman",serif;font-size:22px;font-weight:500;line-height:1.15}
+.recipe-crops{font-size:21px;line-height:1.1}
+.recipe-description{font-size:12px;line-height:1.55;color:var(--muted);flex:1}
+.kitchen-planner{margin-top:45px;border-top:1px solid var(--line);padding-top:34px}
+.kitchen-planner .section-heading h3{font-family:Georgia,serif;font-size:33px;font-weight:500;margin:0}
+.kitchen-planner-layout{display:grid;grid-template-columns:350px minmax(0,1fr);gap:18px}
+.kitchen-plan-form,.kitchen-plan-results{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:25px}
+.kitchen-plan-form h4,.kitchen-plan-results h4{font-size:19px;margin:0 0 16px}
+.kitchen-plan-form label{display:block;font-size:11px;font-weight:800;margin:13px 0 6px}
+.kitchen-plan-form input,.kitchen-plan-form select,.kitchen-plan-form textarea{display:block;width:100%;border:1px solid var(--line);background:white;border-radius:6px;padding:10px;font-size:13px;color:var(--ink)}
+.kitchen-plan-form button{margin-top:16px}
+.kitchen-planner-tools{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+.kitchen-planner-tools div{display:flex;gap:14px;flex-wrap:wrap}
+.kitchen-plan-list{display:flex;flex-direction:column;gap:9px;max-height:470px;overflow:auto}
+.kitchen-plan-entry{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:9px;padding:15px}
+.kitchen-plan-entry.done{opacity:.65}
+.kitchen-plan-entry h4{font-size:15px;margin:0 0 5px}
+.kitchen-plan-entry p{font-size:12px;color:var(--muted);margin:2px 0;overflow-wrap:anywhere}
+.kitchen-plan-actions{display:flex;align-items:start;gap:5px;flex:none}
+.kitchen-plan-actions button{background:#f2f4ea;border:1px solid var(--line);border-radius:5px;font-size:11px;padding:7px}
+#kitchenRecipeDialog{width:min(810px,94vw);max-width:min(810px,94vw)}
+.kitchen-recipe-heading h2{font-family:Georgia,serif;font-size:clamp(30px,4vw,44px);font-weight:500;line-height:1.15;margin:0 0 8px}
+.kitchen-recipe-heading p:not(.eyebrow){font-size:14px;color:var(--muted)}
+.kitchen-recipe-produce{padding:13px 15px;background:#edf2e5;border-radius:8px;font-size:12px;color:#45614b;margin:20px 0}
+.kitchen-recipe-servings{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.kitchen-recipe-servings label{font-size:12px;font-weight:800}
+.kitchen-recipe-servings select{background:white;border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.kitchen-recipe-columns{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:26px;margin-top:23px}
+.kitchen-recipe-columns h3{font-family:Georgia,serif;font-size:22px;font-weight:500;margin:0 0 13px}
+.kitchen-ingredients{list-style:disc;padding-left:18px}
+.kitchen-steps{padding-left:20px}
+.kitchen-ingredients li,.kitchen-steps li{font-size:13px;line-height:1.6;color:#4c5e50;margin:0 0 10px}
+.kitchen-recipe-safety{background:#f8eee2;border:1px solid #ecd3b9;color:#815a3c;border-radius:8px;padding:14px;font-size:12px;line-height:1.65;margin:18px 0}
+@media(max-width:1100px){.kitchen-recipe-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:850px){.kitchen-recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kitchen-planner-layout{grid-template-columns:1fr}.kitchen-filters{grid-template-columns:1fr 1fr}.kitchen-filters .search-wrap{grid-column:1 / -1}}
+@media(max-width:560px){.kitchen-section{padding:48px 16px}.kitchen-recipe-grid{grid-template-columns:1fr}.kitchen-filters{grid-template-columns:1fr}.kitchen-filters .search-wrap{grid-column:auto}.kitchen-plan-form,.kitchen-plan-results{padding:17px}.kitchen-recipe-columns{grid-template-columns:1fr;gap:5px}.kitchen-recipe-card{min-height:165px}.kitchen-planner-tools{flex-direction:column}.kitchen-recipe-heading h2{font-size:29px}}
+@media print{.site-header,.hero,.dashboard,.planner-section,.crop-section,.preservation-section,.journal-section,.learning-section,.sources,.site-footer,.kitchen-filters,.kitchen-recipe-grid,.kitchen-planner{display:none!important}}

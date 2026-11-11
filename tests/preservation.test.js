@@ -61,7 +61,7 @@ test("static site includes its preservation source, UI and bumped offline cache"
   assert.match(html,/id="pantryForm"/);
   assert.match(html,/id="preserveDialog"/);
   assert.match(js,/initPreservation\(\)/);
-  assert.match(sw,/almanacphi-v2/);
+  assert.ok(Number(sw.match(/almanacphi-v(\d+)/)?.[1])>=2);
   assert.match(sw,/preservation-data\.js/);
   assert.match(sw,/preservation-ui\.js/);
 });
