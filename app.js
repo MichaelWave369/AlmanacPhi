@@ -1,5 +1,5 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
-import {DEFAULT_SETTINGS,PRESETS,parseISO,iso,addDays,formatted,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,monthShift,seasonFor,seasonTip,lunarTradition} from "./engine.js";
+import {DEFAULT_SETTINGS,PRESETS,parseISO,iso,addDays,formatted,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,monthShift,seasonFor,seasonTip,lunarTradition,moonIlluminatedPath} from "./engine.js";
 const $=id=>document.getElementById(id);
 const STORAGE_SETTINGS="almanacphi.settings.v1",STORAGE_GARDEN="almanacphi.garden.v1";
 const seasonMonths=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -28,14 +28,7 @@ function windowText(start,end){
   return `${formatted(start)} – ${formatted(end)}${sameYear?"":` ${end.getUTCFullYear()}`}`;
 }
 function moonSVG(phase){
-  const r=47,center=50,cos=Math.cos(2*Math.PI*phase),right=phase<=.5;
-  const edge=[],terminator=[];
-  for(let i=0;i<=100;i++){
-    const y=-1+2*i/100,spread=r*Math.sqrt(Math.max(0,1-y*y));
-    edge.push(`${(center+(right?spread:-spread)).toFixed(2)},${(center+r*y).toFixed(2)}`);
-    terminator.push(`${(center+cos*spread).toFixed(2)},${(center+r*y).toFixed(2)}`);
-  }
-  const path=`M ${edge.join(" L ")} L ${terminator.reverse().join(" L ")} Z`;
+  const path=moonIlluminatedPath(phase);
   return `<svg viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#1c3027"/><path d="${path}" fill="#f5edc8"/><circle cx="50" cy="50" r="47" fill="none" stroke="#a7a18b" stroke-width="1"/></svg>`;
 }
 function renderSky(){
