@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#183b2d">
-  <meta name="description" content="AlmanacPhi: an evidence-first, offline-capable planting calendar, crop guide, sun and moon explorer, and personal garden journal.">
+  <meta name="description" content="AlmanacPhi: an offline-friendly growing calendar, crop guides, safe preservation pathways, fresh garden recipes, and a private planting and meal journal.">
   <title>AlmanacΦ | Grow with the seasons</title>
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.js"></script>
@@ -14,9 +14,9 @@
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Almanac Phi home"><span class="brand-mark">Φ</span><span>Almanac<span class="brand-phi">Phi</span></span></a>
     <nav class="topnav" aria-label="Main navigation">
-      <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#journal">My garden</a><a href="#field-notes">Field notes</a>
+      <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#field-notes">Field notes</a>
     </nav>
-    <span class="edition">THE LIVING FIELD GUIDE · V0.2</span>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.3</span>
   </header>
   <main id="main">
     <section class="hero" id="top">
@@ -101,8 +101,48 @@
       </div>
       <dialog id="preserveDialog" aria-labelledby="preserveDialogTitle"><div class="dialog-top"><p class="eyebrow">HARVEST PRESERVATION GUIDE</p><button type="button" id="preserveDialogClose" class="dialog-close" aria-label="Close preservation guide">×</button></div><div id="preserveDialogBody"></div></dialog>
     </section>
+    <section id="kitchen" class="section-wrap kitchen-section">
+      <div class="section-heading">
+        <div><p class="eyebrow">04 / FROM THE GARDEN TO THE TABLE</p><h2>Cook what you grow.</h2>
+          <p class="section-intro">Sixteen original recipes spanning all 19 crops. Browse your harvest, scale ingredients, and make a plan for the week's meals.</p></div>
+      </div>
+      <div class="kitchen-safety-banner" role="note"><b>Fresh cooking, not shelf-stable canning.</b> These recipes are made to eat now or chill safely. Keep leftovers in a refrigerator at or below 40°F (4°C), refrigerate within 2 hours (within 1 hour above 90°F), and use within 3–4 days or freeze. For tested canning instructions, use the <a href="#preserve">Preserve section</a>.</div>
+      <div class="kitchen-filters">
+        <label class="search-wrap" for="recipeSearch"><span aria-hidden="true">⌕</span><input id="recipeSearch" type="search" placeholder="Search garden dishes..." autocomplete="off"></label>
+        <label class="kitchen-select-label" for="recipeCropFilter">Harvest <select id="recipeCropFilter"></select></label>
+        <label class="kitchen-select-label" for="recipeSeasonFilter">Season <select id="recipeSeasonFilter"><option value="all">Any season</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="fall">Autumn</option><option value="winter">Winter</option></select></label>
+      </div>
+      <div id="kitchenRecipeCards" class="kitchen-recipe-grid" aria-live="polite"></div>
+      <p id="kitchenRecipeCount" class="subtle"></p>
+      <div id="kitchenMealPlanner" class="kitchen-planner">
+        <div class="section-heading"><div><p class="eyebrow">YOUR HARVEST TABLE</p><h3>Plan garden meals</h3><p class="section-intro">Select a dish, pick a date, and keep your own meal plan. Your notes stay in this browser.</p></div></div>
+        <div class="kitchen-planner-layout">
+          <form id="kitchenPlanForm" class="kitchen-plan-form">
+            <h4>Add to the table</h4>
+            <label for="kitchenPlanRecipe">Recipe</label><select id="kitchenPlanRecipe" required></select>
+            <div class="two-fields">
+              <div><label for="kitchenPlanDate">Date</label><input id="kitchenPlanDate" type="date" required></div>
+              <div><label for="kitchenPlanServings">Servings</label><select id="kitchenPlanServings" required></select></div>
+            </div>
+            <label for="kitchenPlanNote">Notes</label><textarea id="kitchenPlanNote" rows="3" maxlength="200" placeholder="Which crops to pick, what's already in the pantry..."></textarea>
+            <button class="button primary full" type="submit">Plan this meal +</button><p class="form-message" id="kitchenPlanStatus" role="status"></p>
+          </form>
+          <div class="kitchen-plan-results">
+            <div class="kitchen-planner-tools"><h4>Meal plan <span id="kitchenPlanCount" class="count-bubble">0</span></h4>
+              <div><button type="button" class="link-button" id="kitchenShoppingDownload">Shopping list .txt</button>
+              <button type="button" class="link-button" id="kitchenPlanExport">Export plan JSON</button></div></div>
+            <div id="kitchenPlanList" class="kitchen-plan-list" aria-live="polite"></div>
+            <p class="data-note">Shopping lists are organized by meal, not combined totals. Check your own garden and pantry first. No account or cloud sync.</p>
+          </div>
+        </div>
+      </div>
+      <dialog id="kitchenRecipeDialog" aria-labelledby="kitchenRecipeTitle">
+        <div class="dialog-top"><p class="eyebrow">ALMANACΦ · HARVEST KITCHEN</p><button id="kitchenRecipeDialogClose" type="button" class="dialog-close" aria-label="Close recipe">×</button></div>
+        <div id="kitchenRecipeDialogBody"></div>
+      </dialog>
+    </section>
     <section id="journal" class="section-wrap journal-section">
-      <div class="section-heading"><div><p class="eyebrow">04 / MAKE IT PERSONAL</p><h2>My garden journal</h2><p class="section-intro">Log what you planted, where you planted it, and what happened next. Entries are saved only in this browser.</p></div></div>
+      <div class="section-heading"><div><p class="eyebrow">05 / MAKE IT PERSONAL</p><h2>My garden journal</h2><p class="section-intro">Log what you planted, where you planted it, and what happened next. Entries are saved only in this browser.</p></div></div>
       <div class="journal-layout">
         <form id="journalForm" class="journal-form">
           <h3>Add a planting</h3>
@@ -115,7 +155,7 @@
       </div>
     </section>
     <section id="field-notes" class="section-wrap learning-section">
-      <div class="section-heading"><div><p class="eyebrow">05 / GROWING WISDOM</p><h2>Read the field, not just the calendar</h2><p class="section-intro">A reliable grower watches several systems at once. Here is what changes your plants’ chances.</p></div></div>
+      <div class="section-heading"><div><p class="eyebrow">06 / GROWING WISDOM</p><h2>Read the field, not just the calendar</h2><p class="section-intro">A reliable grower watches several systems at once. Here is what changes your plants’ chances.</p></div></div>
       <div class="learning-grid">
         <article class="learn-card"><div class="learn-icon">☼</div><h3>Sun & day length</h3><p>Sunlight powers photosynthesis. Most fruiting crops need 6–8+ hours of direct sun; leafy crops can often manage less. Day length shifts with latitude and season, affecting flowering and crop development.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
         <article class="learn-card"><div class="learn-icon">♧</div><h3>Soil & water</h3><p>Check soil temperature before sowing. Start with a soil test, add organic matter when appropriate, mulch to moderate moisture and temperature, and water at the root zone instead of on a rigid schedule.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
@@ -126,7 +166,7 @@
       </div>
       <div class="moon-tradition"><span class="moon-tradition-mark">◐</span><div><h3>Lunar planting, without pretending folklore is physics</h3><p id="traditionNote">—</p><p>Use the moon cycle as an optional observation ritual, never as a reason to miss a safe soil- or weather-based planting window.</p></div></div>
     </section>
-    <section class="sources section-wrap"><div><p class="eyebrow">THE RECEIPTS</p><h2>Sources & scope</h2><p>This first release is a Northern Hemisphere, U.S.-oriented planning tool. Its dates are editable examples and relative crop windows, not forecasts, live frost records, or location-certified advice. Moon and daylight estimates are approximate astronomical calculations. Consult your local extension office for cultivar-specific guidance.</p></div><ul><li><a target="_blank" rel="noopener noreferrer" href="https://planthardiness.ars.usda.gov/">USDA · Plant Hardiness Zone Map</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.colostate.edu/resource/vegetable-planting-guide/">CSU Extension · Vegetable Planting Guide</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.rutgers.edu/fs787">Rutgers Extension · Starting Vegetable Seeds</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.ucanr.edu/program/uc-master-gardener-program/time-planting">UC Master Gardeners · Time of Planting</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.mdpi.com/2073-4395/10/7/955">Review · Moon phases and plant physiology</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://nchfp.uga.edu/how/general-canning-information/ensuring-safe-canned-foods/">NCHFP / USDA · Safe home canning</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.umn.edu/garden-and-home/yard-and-garden/gardening-in-minnesota/saving-vegetable-seeds">UMN Extension · Saving seeds</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts">FoodSafety.gov · Cold storage</a></li></ul></section>
+    <section class="sources section-wrap"><div><p class="eyebrow">THE RECEIPTS</p><h2>Sources & scope</h2><p>This first release is a Northern Hemisphere, U.S.-oriented planning tool. Its dates are editable examples and relative crop windows, not forecasts, live frost records, or location-certified advice. Moon and daylight estimates are approximate astronomical calculations. Consult your local extension office for cultivar-specific guidance.</p></div><ul><li><a target="_blank" rel="noopener noreferrer" href="https://planthardiness.ars.usda.gov/">USDA · Plant Hardiness Zone Map</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.colostate.edu/resource/vegetable-planting-guide/">CSU Extension · Vegetable Planting Guide</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.rutgers.edu/fs787">Rutgers Extension · Starting Vegetable Seeds</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.ucanr.edu/program/uc-master-gardener-program/time-planting">UC Master Gardeners · Time of Planting</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.mdpi.com/2073-4395/10/7/955">Review · Moon phases and plant physiology</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://nchfp.uga.edu/how/general-canning-information/ensuring-safe-canned-foods/">NCHFP / USDA · Safe home canning</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://extension.umn.edu/garden-and-home/yard-and-garden/gardening-in-minnesota/saving-vegetable-seeds">UMN Extension · Saving seeds</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts">FoodSafety.gov · Cold storage</a></li><li><a target="_blank" rel="noopener noreferrer" href="https://ask.fsis.usda.gov/article/How-do-I-handle-leftovers-safely">USDA FSIS · Safe leftovers</a></li></ul></section>
   </main>
   <footer class="site-footer"><div class="footer-brand">Almanac<span>Φ</span></div><p>Grow knowledge. Share the harvest. Keep the field open.</p><a target="_blank" rel="noopener noreferrer" href="https://github.com/MichaelWave369/AlmanacPhi">Open-source on GitHub ↗</a></footer>
   <dialog id="cropDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><p class="eyebrow">THE CROP FIELD GUIDE</p><button type="button" id="dialogClose" class="dialog-close" aria-label="Close crop guide">×</button></div><div id="dialogBody"></div></dialog>

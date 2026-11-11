@@ -1,16 +1,19 @@
-const CACHE="almanacphi-v2";
-const CORE=["./","./index.html","./styles.css","./app.js","./engine.js","./crop-data.js","./preservation-data.js","./preservation-ui.js"];
-self.addEventListener("install",e=>{
-  e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
+const CACHE="almanacphi-v3";
+const CORE=["./","./index.html","./styles.css","./app.js","./engine.js","./crop-data.js",
+  "./preservation-data.js","./preservation-ui.js","./recipe-data.js","./kitchen-ui.js"];
+self.addEventListener("install",event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
 });
-self.addEventListener("activate",e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("almanacphi-")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+self.addEventListener("activate",event=>{
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("almanacphi-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
 });
-self.addEventListener("fetch",e=>{
-  const req=e.request;
-  if(req.method!=="GET"||new URL(req.url).origin!==self.location.origin)return;
-  e.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(response=>{
-    if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(req,copy));}
+self.addEventListener("fetch",event=>{
+  const request=event.request;
+  if(request.method!=="GET"||new URL(request.url).origin!==self.location.origin)return;
+  // Network first avoids stale pages/modules after a new GitHub Pages release.
+  // Cached files remain usable when the network is down.
+  event.respondWith(fetch(request).then(response=>{
+    if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(request,copy)));}
     return response;
-  })));
+  }).catch(async()=>await caches.match(request)||Response.error()));
 });

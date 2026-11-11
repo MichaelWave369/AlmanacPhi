@@ -1,5 +1,6 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {initPreservation,showCropPreservation} from "./preservation-ui.js";
+import {initKitchen,showCropKitchen} from "./kitchen-ui.js";
 import {DEFAULT_SETTINGS,PRESETS,parseISO,iso,addDays,formatted,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,monthShift,seasonFor,seasonTip,lunarTradition,moonIlluminatedPath} from "./engine.js";
 const $=id=>document.getElementById(id);
 const STORAGE_SETTINGS="almanacphi.settings.v1",STORAGE_GARDEN="almanacphi.garden.v1";
@@ -101,8 +102,10 @@ function openCrop(crop){
     <div class="detail-section"><h3>Harvesting</h3><p>${safe(crop.harvest)}</p></div>
     <div class="detail-section"><h3>Watch for</h3><p>${safe(crop.issues)}</p></div>
     <div class="detail-section"><h3>Field wisdom</h3><p>${safe(crop.extra)}</p><p style="margin-top:10px;font-size:11px">*Days to maturity are rough variety-dependent reference figures. Seed packets may count from transplant rather than sowing.</p></div>
-    <button type="button" class="button dark full" data-open-preservation>How to preserve this harvest ↗</button>`;
+    <button type="button" class="button dark full" data-open-preservation>How to preserve this harvest ↗</button>
+    <button type="button" class="button secondary full" style="margin-top:9px" data-open-kitchen>Cook with this crop ↗</button>`;
   $("dialogBody").querySelector("[data-open-preservation]")?.addEventListener("click",()=>showCropPreservation(crop.id));
+  $("dialogBody").querySelector("[data-open-kitchen]")?.addEventListener("click",()=>showCropKitchen(crop.id));
   $("cropDialog").showModal();
 }
 function renderJournal(){
@@ -172,6 +175,7 @@ function init(){
   });
   renderAll();
   initPreservation();
+  initKitchen();
   if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 }
 init();
