@@ -1,5 +1,6 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {RECIPES,RECIPE_BY_ID,SERVINGS_OPTIONS,recipeIngredients,validateMealPlan} from "./recipe-data.js";
+import {checkLedger,availableCropIds} from "./harvest-data.js";
 const $=id=>document.getElementById(id);
 const KEY="almanacphi.kitchen.v1", MAX_PLANS=300;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
@@ -18,17 +19,32 @@ function options(){
   $("kitchenPlanServings").value="4";
   $("kitchenPlanDate").value=todayLocal();
 }
+function readHarvestAvailability(){
+  try{
+    const record=JSON.parse(localStorage.getItem("almanacphi.harvest.v1")||"null");
+    return record&&checkLedger(record.lots,record.allocations)?
+      availableCropIds(record.lots,record.allocations):new Set();
+  }catch(e){return new Set();}
+}
+export function showHarvestKitchen(){
+  $("recipeFromHarvest").checked=true;
+  $("recipeCropFilter").value="all";$("recipeSeasonFilter").value="all";$("recipeSearch").value="";
+  renderRecipes();
+  $("kitchen").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
 function renderRecipes(){
+  const harvestCrops=readHarvestAvailability(),harvestOnly=$("recipeFromHarvest").checked;
   const crop=$("recipeCropFilter").value,season=$("recipeSeasonFilter").value,search=$("recipeSearch").value.trim().toLowerCase();
-  const filtered=RECIPES.filter(r=>(crop==="all"||r.crops.includes(crop))&&(season==="all"||r.season===season)&&
+  const filtered=RECIPES.filter(r=>(!harvestOnly||r.crops.some(id=>harvestCrops.has(id)))&&(crop==="all"||r.crops.includes(crop))&&(season==="all"||r.season===season)&&
     (r.title.toLowerCase().includes(search)||r.description.toLowerCase().includes(search)||r.crops.some(id=>CROP_BY_ID[id].name.toLowerCase().includes(search))));
   $("kitchenRecipeCards").innerHTML=filtered.map(r=>
     '<button type="button" class="kitchen-recipe-card" data-open-recipe="'+r.id+'" aria-label="Open recipe for '+esc(r.title)+'">'+
     '<span class="recipe-sticker">'+esc(r.season.toUpperCase())+' · '+r.minutes+' MIN</span><strong>'+esc(r.title)+'</strong>'+
     '<span class="recipe-crops">'+r.crops.slice(0,4).map(id=>CROP_BY_ID[id].emoji).join(" ")+'</span>'+
+    (harvestOnly?'<span class="recipe-harvest-match">'+r.crops.filter(id=>harvestCrops.has(id)).length+' of '+r.crops.length+' garden crops recorded</span>':"")+
     '<span class="recipe-description">'+esc(r.description)+'</span><span class="crop-link">VIEW RECIPE ↗</span></button>'
   ).join("")||'<div class="empty-state">No recipes match these filters. Try another season or crop.</div>';
-  $("kitchenRecipeCount").textContent=filtered.length+" of "+RECIPES.length+" original recipes";
+  $("kitchenRecipeCount").textContent=filtered.length+" of "+RECIPES.length+" original recipes"+(harvestOnly?" · matches at least one recorded crop; quantities and freshness are not checked":"");
 }
 function renderRecipeIngredients(){
   const recipe=RECIPE_BY_ID[activeRecipeId];
@@ -86,6 +102,8 @@ export function initKitchen(){
   options();loadPlans();renderRecipes();renderPlan();
   ["recipeCropFilter","recipeSeasonFilter"].forEach(id=>$(id).addEventListener("change",renderRecipes));
   $("recipeSearch").addEventListener("input",renderRecipes);
+  $("recipeFromHarvest").addEventListener("change",renderRecipes);
+  window.addEventListener("almanacphi:harvest-updated",renderRecipes);
   $("kitchenRecipeCards").addEventListener("click",e=>{
     const btn=e.target.closest("button[data-open-recipe]");
     if(btn)openRecipe(btn.dataset.openRecipe);

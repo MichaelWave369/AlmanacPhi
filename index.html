@@ -14,9 +14,9 @@
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Almanac Phi home"><span class="brand-mark">Φ</span><span>Almanac<span class="brand-phi">Phi</span></span></a>
     <nav class="topnav" aria-label="Main navigation">
-      <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#field-notes">Field notes</a>
+      <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#harvest">Harvest</a><a href="#field-notes">Field notes</a>
     </nav>
-    <span class="edition">THE LIVING FIELD GUIDE · V0.3</span>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.4</span>
   </header>
   <main id="main">
     <section class="hero" id="top">
@@ -112,6 +112,7 @@
         <label class="kitchen-select-label" for="recipeCropFilter">Harvest <select id="recipeCropFilter"></select></label>
         <label class="kitchen-select-label" for="recipeSeasonFilter">Season <select id="recipeSeasonFilter"><option value="all">Any season</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="fall">Autumn</option><option value="winter">Winter</option></select></label>
       </div>
+      <label class="kitchen-harvest-toggle"><input type="checkbox" id="recipeFromHarvest"> Show recipes using at least one crop from my Harvest Ledger</label>
       <div id="kitchenRecipeCards" class="kitchen-recipe-grid" aria-live="polite"></div>
       <p id="kitchenRecipeCount" class="subtle"></p>
       <div id="kitchenMealPlanner" class="kitchen-planner">
@@ -154,8 +155,45 @@
         <div class="journal-list-wrap"><div class="journal-list-heading"><h3>Growing log <span id="gardenCount" class="count-bubble">0</span></h3><div class="journal-actions"><button id="exportJournal" type="button" class="link-button">Export JSON</button><button id="clearJournal" type="button" class="link-button danger">Clear all</button></div></div><div id="journalList" class="journal-list"></div></div>
       </div>
     </section>
+    <section id="harvest" class="section-wrap harvest-section">
+      <div class="section-heading"><div><p class="eyebrow">06 / FOLLOW THE HARVEST</p><h2>Know what you really have.</h2>
+        <p class="section-intro">Record what you pick, connect it to your garden journal, and account for how you use it. Quantities are never subtracted from recipes or preservation records automatically.</p></div></div>
+      <div class="harvest-clarity" role="note"><b>Traceable, not magical.</b> Each harvest is a lot. Every use is an explicit allocation, so the same pounds of tomatoes cannot be counted twice. Weight units convert to one another; individual items are tracked separately. Inventory is a record, <b>not</b> a freshness or food-safety assessment.</div>
+      <div class="harvest-stock-panel"><div class="harvest-stock-heading"><div><p class="eyebrow">AVAILABLE FROM YOUR GARDEN</p><h3>Harvest on hand <span id="harvestStockCount" class="count-bubble">0</span></h3></div>
+      <button type="button" id="harvestCookSuggestions" class="button primary">Find meals using this harvest ↗</button></div>
+      <div id="harvestStock" class="harvest-stock-list" aria-live="polite"></div>
+      <p class="data-note">Garden-to-kitchen recipe matches only require one recorded crop. Compare amounts, other ingredients, and safe storage conditions yourself before cooking.</p></div>
+      <div class="harvest-layout">
+        <form id="harvestForm" class="harvest-form">
+          <h3>Record your yield</h3>
+          <label for="harvestCrop">Crop</label><select id="harvestCrop" required></select>
+          <label for="harvestSourcePlant">Linked garden planting (optional)</label><select id="harvestSourcePlant"></select>
+          <div class="two-fields"><div><label for="harvestDate">Harvest date</label><input type="date" id="harvestDate" required></div><div><label for="harvestBed">Bed / source</label><input id="harvestBed" maxlength="100" placeholder="Raised bed A"></div></div>
+          <div class="two-fields"><div><label for="harvestAmount">Quantity picked</label><input type="number" id="harvestAmount" min="0.001" step="any" required placeholder="6"></div><div><label for="harvestUnit">Unit</label><select id="harvestUnit" required></select></div></div>
+          <label for="harvestNote">Harvest notes</label><textarea id="harvestNote" rows="3" maxlength="400" placeholder="Variety, ripeness, conditions..."></textarea>
+          <button type="submit" class="button dark full">Record harvest +</button>
+          <p class="form-message" id="harvestStatus" role="status"></p>
+          <button type="button" id="harvestExport" class="link-button">Export harvest ledger JSON</button>
+          <button type="button" id="harvestRawBackup" class="link-button">Backup raw stored data</button>
+        </form>
+        <form id="harvestUseForm" class="harvest-form">
+          <h3>Account for what you used</h3>
+          <label for="harvestUseLot">Harvest lot</label><select id="harvestUseLot" required></select>
+          <p class="harvest-unit-hint" id="harvestUseUnit">Record a harvest lot first</p>
+          <div class="two-fields"><div><label for="harvestUseAmount">Amount used (lot's unit)</label><input type="number" id="harvestUseAmount" min="0.001" step="any" required></div><div><label for="harvestUseDate">Date used</label><input type="date" id="harvestUseDate" required></div></div>
+          <label for="harvestUsePurpose">Where did it go?</label><select id="harvestUsePurpose" required></select>
+          <label for="harvestUseNote">Reference / notes</label><textarea id="harvestUseNote" rows="3" maxlength="400" placeholder="Pesto batch, family dinner, donated to neighbors..."></textarea>
+          <button type="submit" class="button primary full" id="harvestUseSave">Record use −</button>
+          <p class="harvest-use-explainer">Choose “Preserved or stored” here, then separately log its batch in the <a href="#preserve">Pantry Ledger</a>. These records do not silently sync, and the Pantry Ledger does not subtract harvest quantities automatically.</p>
+        </form>
+      </div>
+      <div class="harvest-records-layout">
+        <div class="harvest-record-box"><div class="harvest-record-heading"><h3>Harvest lots <span id="harvestLotCount" class="count-bubble">0</span></h3></div><div id="harvestLots" class="harvest-record-list"></div></div>
+        <div class="harvest-record-box"><div class="harvest-record-heading"><h3>Where it went <span id="harvestAllocationCount" class="count-bubble">0</span></h3></div><div id="harvestAllocations" class="harvest-record-list"></div></div>
+      </div>
+    </section>
     <section id="field-notes" class="section-wrap learning-section">
-      <div class="section-heading"><div><p class="eyebrow">06 / GROWING WISDOM</p><h2>Read the field, not just the calendar</h2><p class="section-intro">A reliable grower watches several systems at once. Here is what changes your plants’ chances.</p></div></div>
+      <div class="section-heading"><div><p class="eyebrow">07 / GROWING WISDOM</p><h2>Read the field, not just the calendar</h2><p class="section-intro">A reliable grower watches several systems at once. Here is what changes your plants’ chances.</p></div></div>
       <div class="learning-grid">
         <article class="learn-card"><div class="learn-icon">☼</div><h3>Sun & day length</h3><p>Sunlight powers photosynthesis. Most fruiting crops need 6–8+ hours of direct sun; leafy crops can often manage less. Day length shifts with latitude and season, affecting flowering and crop development.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
         <article class="learn-card"><div class="learn-icon">♧</div><h3>Soil & water</h3><p>Check soil temperature before sowing. Start with a soil test, add organic matter when appropriate, mulch to moderate moisture and temperature, and water at the root zone instead of on a rigid schedule.</p><span class="evidence">ESTABLISHED SCIENCE</span></article>
