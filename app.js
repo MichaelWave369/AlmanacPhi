@@ -1,6 +1,7 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {initPreservation,showCropPreservation} from "./preservation-ui.js";
 import {initKitchen,showCropKitchen} from "./kitchen-ui.js";
+import {initHarvest,setHarvestPlantings,showPlantHarvest} from "./harvest-ui.js";
 import {DEFAULT_SETTINGS,PRESETS,parseISO,iso,addDays,formatted,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,monthShift,seasonFor,seasonTip,lunarTradition,moonIlluminatedPath} from "./engine.js";
 const $=id=>document.getElementById(id);
 const STORAGE_SETTINGS="almanacphi.settings.v1",STORAGE_GARDEN="almanacphi.garden.v1";
@@ -114,7 +115,7 @@ function renderJournal(){
   $("journalList").innerHTML=[...garden].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{
     const c=CROP_BY_ID[x.crop],date=parseISO(x.date),harvest=addDays(date,c.days);
     return `<article class="journal-entry ${x.done?"done":""}"><div><h4>${c.emoji} ${safe(c.name)} ${x.done?"✓":""}</h4><p><b>Planted:</b> ${formatted(date,{month:"short",day:"numeric",year:"numeric"})} ${x.bed?`· ${safe(x.bed)}`:""}</p><p><b>Rough maturity:</b> ${formatted(harvest,{month:"short",day:"numeric",year:"numeric"})} (variety-dependent)</p>${x.note?`<p>${safe(x.note)}</p>`:""}</div>
-      <div class="journal-btns"><button type="button" data-action="toggle" data-id="${safe(x.id)}" aria-label="${x.done?"Mark growing":"Mark harvested"}">${x.done?"Reopen":"Harvested"}</button><button type="button" data-action="delete" data-id="${safe(x.id)}" aria-label="Delete planting">×</button></div></article>`;
+      <div class="journal-btns"><button type="button" data-action="harvest" data-id="${safe(x.id)}" aria-label="Record harvest for ${safe(c.name)}">Log yield</button><button type="button" data-action="toggle" data-id="${safe(x.id)}" aria-label="${x.done?"Mark growing":"Mark harvested"}">${x.done?"Reopen":"Harvested"}</button><button type="button" data-action="delete" data-id="${safe(x.id)}" aria-label="Delete planting">×</button></div></article>`;
   }).join("");
 }
 function renderAll(){renderSky();renderCalendar();renderCrops();renderJournal()}
@@ -155,14 +156,15 @@ function init(){
     if(garden.length>=500){message("journalMessage","Journal limit reached (500 entries). Export or clear some entries.");return}
     garden.push({id:`${Date.now()}${Math.random().toString(36).slice(2)}`,crop,date,bed:$("plantBed").value.trim().slice(0,70),note:$("plantNote").value.trim().slice(0,500),done:false});
     message("journalMessage",saveGarden()?"Added to this browser.":"Added for this session; local storage is unavailable.");
-    $("plantNote").value="";renderJournal();
+    $("plantNote").value="";renderJournal();setHarvestPlantings(garden);
   });
   $("journalList").addEventListener("click",e=>{
     const b=e.target.closest("button[data-action]");if(!b)return;
     const x=garden.find(g=>g.id===b.dataset.id);if(!x)return;
+    if(b.dataset.action==="harvest"){showPlantHarvest(x);return;}
     if(b.dataset.action==="toggle")x.done=!x.done;
     if(b.dataset.action==="delete"){if(!window.confirm("Delete this journal entry?"))return;garden=garden.filter(g=>g.id!==x.id)}
-    saveGarden();renderJournal();
+    saveGarden();renderJournal();setHarvestPlantings(garden);
   });
   $("exportJournal").addEventListener("click",()=>{
     const payload={app:"AlmanacPhi",version:1,exportedAt:new Date().toISOString(),settings,garden};
@@ -171,11 +173,13 @@ function init(){
   });
   $("clearJournal").addEventListener("click",()=>{
     if(!garden.length||!window.confirm("Permanently clear every locally saved garden entry? Export first if you want a backup."))return;
-    garden=[];saveGarden();renderJournal();message("journalMessage","Journal cleared.");
+    garden=[];saveGarden();renderJournal();setHarvestPlantings(garden);message("journalMessage","Journal cleared.");
   });
   renderAll();
   initPreservation();
   initKitchen();
+  initHarvest();
+  setHarvestPlantings(garden);
   if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 }
 init();

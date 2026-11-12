@@ -98,3 +98,41 @@
 @media(max-width:850px){.kitchen-recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kitchen-planner-layout{grid-template-columns:1fr}.kitchen-filters{grid-template-columns:1fr 1fr}.kitchen-filters .search-wrap{grid-column:1 / -1}}
 @media(max-width:560px){.kitchen-section{padding:48px 16px}.kitchen-recipe-grid{grid-template-columns:1fr}.kitchen-filters{grid-template-columns:1fr}.kitchen-filters .search-wrap{grid-column:auto}.kitchen-plan-form,.kitchen-plan-results{padding:17px}.kitchen-recipe-columns{grid-template-columns:1fr;gap:5px}.kitchen-recipe-card{min-height:165px}.kitchen-planner-tools{flex-direction:column}.kitchen-recipe-heading h2{font-size:29px}}
 @media print{.site-header,.hero,.dashboard,.planner-section,.crop-section,.preservation-section,.journal-section,.learning-section,.sources,.site-footer,.kitchen-filters,.kitchen-recipe-grid,.kitchen-planner{display:none!important}}
+
+
+/* Harvest Ledger v0.4 */
+.harvest-section{padding-top:72px}
+.harvest-clarity{border:1px solid #c6d6bd;border-left:5px solid #688c67;background:#edf3e7;color:#49614c;font-size:13px;line-height:1.7;border-radius:10px;padding:18px 20px;margin-bottom:20px}
+.harvest-stock-panel{border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:25px;box-shadow:var(--shadow);margin-bottom:20px}
+.harvest-stock-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.harvest-stock-heading .eyebrow{margin-bottom:7px}.harvest-stock-heading h3{font-family:Georgia,serif;font-size:28px;font-weight:500;margin:0}
+.harvest-stock-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:20px}
+.harvest-stock-item{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#f0f4e9;border-radius:7px;padding:12px 14px;font-size:12px}
+.harvest-stock-item b{color:var(--forest);font-weight:800;text-align:right}
+.harvest-layout{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-bottom:23px}
+.harvest-form,.harvest-record-box{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px}
+.harvest-form h3,.harvest-record-heading h3{font-family:Georgia,serif;font-size:24px;font-weight:500;margin:0 0 17px}
+.harvest-form label{display:block;font-size:11px;font-weight:800;margin:12px 0 6px}
+.harvest-form select,.harvest-form input,.harvest-form textarea{border:1px solid var(--line);background:white;border-radius:6px;min-height:39px;width:100%;padding:9px 10px;font-size:13px;color:var(--ink)}
+.harvest-form textarea{resize:vertical}
+.harvest-form .button{margin:16px 0 11px}
+.harvest-form .link-button{margin:0 10px 8px 0}
+.harvest-unit-hint{font-size:11px;color:var(--fern);margin:8px 0 0}
+.harvest-use-explainer{font-size:11px;color:var(--muted);line-height:1.6;margin:8px 0}
+.harvest-use-explainer a{color:var(--forest);text-underline-offset:2px}
+.harvest-records-layout{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.harvest-record-list{display:flex;flex-direction:column;gap:9px;max-height:540px;overflow-y:auto}
+.harvest-record-heading h3{margin-bottom:14px}
+.harvest-lot,.harvest-activity{display:flex;justify-content:space-between;gap:10px;padding:14px;background:#f7f8f0;border:1px solid #e4e7dc;border-radius:8px;overflow-wrap:anywhere}
+.harvest-lot h4{font-size:15px;margin:0 0 6px}
+.harvest-lot p,.harvest-activity p{font-size:11px;color:var(--muted);margin:4px 0;line-height:1.5}
+.harvest-activity{font-size:12px;align-items:start}
+.harvest-lot-actions{display:flex;flex-direction:column;gap:6px}
+.harvest-lot-actions button,.harvest-activity button{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:6px;padding:7px 9px;font-size:11px;font-weight:750}
+.harvest-lot-actions button:disabled{opacity:.4;cursor:not-allowed}
+.kitchen-harvest-toggle{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--forest);font-weight:750;margin:-3px 0 18px}
+.kitchen-harvest-toggle input{width:17px;height:17px;accent-color:var(--forest)}
+.recipe-harvest-match{display:inline-block;background:#e8f1e1;color:#4a7650;border-radius:6px;font-size:10px;font-weight:750;padding:6px 7px;line-height:1.35}
+.journal-entry .journal-btns{flex-wrap:wrap;justify-content:end}
+@media(max-width:850px){.harvest-layout,.harvest-records-layout{grid-template-columns:1fr}.harvest-stock-list{grid-template-columns:1fr}}
+@media(max-width:560px){.harvest-section{padding:48px 16px}.harvest-form,.harvest-record-box,.harvest-stock-panel{padding:17px}.harvest-stock-heading .button{width:100%}.harvest-lot-actions{justify-content:flex-start}.harvest-lot{flex-direction:column}.harvest-lot-actions{flex-direction:row}}
