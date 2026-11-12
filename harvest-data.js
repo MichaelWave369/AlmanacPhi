@@ -69,7 +69,8 @@ export function linkedPantryEntry(allocation,lot){
     quantity:allocation.pantry.quantity,location:allocation.pantry.location,
     note:allocation.pantry.note,recipe:allocation.pantry.recipe,
     sourceAllocationId:allocation.id,sourceHarvestLotId:lot.id,
-    harvestAmount:allocation.amount,harvestUnit:allocation.unit
+    harvestAmount:allocation.amount,harvestUnit:allocation.unit,
+    ...(allocation.pantry.stock===undefined?{}:{stock:allocation.pantry.stock})
   };
 }
 export function validLinkedPantry(allocation,lot){

@@ -65,3 +65,7 @@ Compiled November 11, 2026. Source pages can change; consult the linked live pub
 ## v0.5 Harvest-to-Pantry Bridge
 
 The Harvest Ledger can create a **linked pantry batch** when the grower explicitly records a preserved/stored harvest allocation. This is stored as one harvest transaction and appears read-only in the Pantry inventory. Standalone pantry batches remain available and **do not** deduct crop inventory. A linked batch records intent and provenance, not proof of a safe preservation process; see [BRIDGE.md](./BRIDGE.md).
+
+## v0.6 container stock tracking
+
+Standalone or harvest-linked pantry batches may optionally track the whole number of jars, bags or other containers *currently recorded* as remaining. Removals are explicit, not automatically inferred from recipes or the passing of time. Container counts do not certify sealing, safe processing, quality, shelf life, food safety or a batch’s edible volume. See [PANTRY_STOCK.md](./PANTRY_STOCK.md).

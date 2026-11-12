@@ -1,3 +1,4 @@
+import {validPantryStock} from "./pantry-stock.js";
 // Harvest-to-pantry educational content. Safety-first, source-linked; NO process schedules.
 // Sources: NCHFP/USDA, FoodSafety.gov and University of Minnesota Extension.
 export const PRESERVATION_GUIDES = [
@@ -144,5 +145,6 @@ export function validPantryEntry(item){
     typeof item.location==="string"&&item.location.length<=100&&
     typeof item.note==="string"&&item.note.length<=500&&
     typeof item.recipe==="string"&&item.recipe.length<=500&&
+    (item.stock===undefined||validPantryStock(item.stock))&&
     (!["water-bath","pressure"].includes(item.method)||/^https:\/\//i.test(item.recipe)));
 }

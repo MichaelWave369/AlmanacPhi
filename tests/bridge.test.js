@@ -74,5 +74,5 @@ test("new harvest-to-pantry controls and local storage integration are present",
   assert.match(pantry,/linkedPantryBatches/);
   assert.match(pantry,/almanacphi:harvest-updated/);
   assert.match(pantry,/linkedPantry:readLinkedPantry\(\)/);
-  assert.match(sw,/almanacphi-v5/);
+  assert.ok(Number(sw.match(/almanacphi-v(\d+)/)?.[1])>=5);
 });
