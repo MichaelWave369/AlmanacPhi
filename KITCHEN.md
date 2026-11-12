@@ -54,3 +54,7 @@ The planner uses browser `localStorage` under `almanacphi.kitchen.v1`, not a ser
 - Add optional printing, offline-first progressive enhancement, and accessible input flow audits.
 
 **Sources were reviewed November 11, 2026; follow the current official advice when preparing food.**
+
+## v0.7 Pantry-Aware Kitchen
+
+Recipes and planned meals can now show possible matches from your standalone and harvest-linked pantry batches. A user-chosen **Review batch** action highlights the exact Pantry record; no stock is automatically spent. Only batches with a positive *recorded* container count qualify for the pantry-only recipe filter; untracked batches remain clearly unknown. A matching preserved crop does not establish an equivalent fresh ingredient or food safety. See [PANTRY_KITCHEN.md](./PANTRY_KITCHEN.md).

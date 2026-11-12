@@ -167,3 +167,19 @@
 .pantry-list .pantry-entry>div{min-width:0;flex:1}
 .pantry-entry .pantry-harvest-link{flex:none}
 @media(max-width:600px){.pantry-last-action{align-items:start;flex-direction:column}.pantry-count-form{flex-direction:column;align-items:stretch}.pantry-count-form label{width:100%;flex:auto}}
+
+
+/* Pantry-aware Harvest Kitchen v0.7 */
+.kitchen-pantry-summary{font-size:12px;line-height:1.6;color:var(--forest);font-weight:750;margin:-3px 0 9px}
+.recipe-pantry-section{margin:21px 0;border:1px solid #c8d7bf;background:#f2f6ed;border-radius:10px;padding:18px}
+.recipe-pantry-section h3{font:500 22px Georgia,serif;margin:0 0 9px;color:var(--forest)}
+.recipe-pantry-section>p{font-size:12px;line-height:1.6;color:#4d6650;margin:0 0 12px}
+.kitchen-pantry-candidates{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;max-height:260px;overflow-y:auto}
+.kitchen-pantry-candidates li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#fff;border:1px solid #dce5d8;border-radius:8px}
+.kitchen-pantry-candidates li strong{font-size:12px;color:var(--ink)}
+.kitchen-pantry-candidates li p{font-size:11px;color:var(--muted);line-height:1.5;margin:5px 0 0;overflow-wrap:anywhere}
+.kitchen-pantry-candidates li button{background:#e7efe1;border:1px solid #afc6a7;border-radius:6px;padding:9px 11px;font-size:11px;font-weight:800;color:#3a6940;white-space:nowrap;flex:none}
+.kitchen-pantry-candidates li button:hover{background:#d6e7ce}
+.kitchen-plan-entry .pantry-recipe-note{font-size:11px;font-weight:750;color:#53764e}
+.pantry-entry.pantry-focused{outline:3px solid #568457;outline-offset:2px;background:#f3f9ed}
+@media(max-width:550px){.kitchen-pantry-candidates li{flex-direction:column;align-items:stretch}.kitchen-pantry-candidates li button{align-self:start}}

@@ -26,7 +26,7 @@ function realISODate(text){
   return d.getUTCFullYear()===year&&d.getUTCMonth()===month-1&&d.getUTCDate()===day;
 }
 function savePantry(){
-  try{localStorage.setItem(STORAGE,JSON.stringify(pantry));return true}
+  try{localStorage.setItem(STORAGE,JSON.stringify(pantry));window.dispatchEvent(new CustomEvent("almanacphi:pantry-updated"));return true}
   catch(e){console.warn("Could not save pantry records",e);return false}
 }
 function populateCrops(){
@@ -79,6 +79,7 @@ function writeStandaloneStock(id,nextStock){
   try{
     localStorage.setItem(STORAGE,JSON.stringify(next));
     pantry=next;
+    window.dispatchEvent(new CustomEvent("almanacphi:pantry-updated"));
     return {ok:true};
   }catch(e){console.warn("Pantry stock update could not be persisted",e);return {ok:false,message:"Browser storage could not save this change. The previous count was preserved."};}
 }
@@ -93,7 +94,7 @@ function renderPantry(){
   $("pantryList").innerHTML=entries.sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{
     const c=CROP_BY_ID[x.crop],method=PRESERVATION_BY_ID[x.method];
     const url=trustedHttps(x.recipe);
-    return `<article class="pantry-entry ${x.origin==="linked"?"linked-pantry-entry":""}"><div><h5>${safe(c.emoji)} ${safe(c.name)} · ${safe(x.quantity)}</h5>
+    return `<article class="pantry-entry ${x.origin==="linked"?"linked-pantry-entry":""}" data-pantry-origin="${safe(x.origin)}" data-pantry-id="${safe(x.id)}" tabindex="-1"><div><h5>${safe(c.emoji)} ${safe(c.name)} · ${safe(x.quantity)}</h5>
       <p><b>${safe(method.name)}</b> · ${safe(x.date)} · ${safe(x.location)}</p>${x.origin==="linked"?`<p class="pantry-link-tag">Linked from harvest · ${safe(x.harvestAmount)} ${safe(x.harvestUnit)} transferred</p>`:`<p class="pantry-link-tag">Standalone batch · no harvest deduction</p>`}${x.note?`<p>${safe(x.note)}</p>`:""}
       ${url?`<a href="${safe(url)}" target="_blank" rel="noopener noreferrer">Recorded recipe source ↗</a>`:""}
       ${renderBatchStockControls(x)}</div>
@@ -114,7 +115,23 @@ export function initPreservation(){
   $("pantryCrop").addEventListener("change",fillMethods);
   $("pantryMethod").addEventListener("change",syncCanningField);
   window.addEventListener("almanacphi:harvest-updated",renderPantry);
-  window.addEventListener("storage",e=>{if(e.key==="almanacphi.harvest.v1")renderPantry();});
+  window.addEventListener("storage",e=>{
+    if(e.key===STORAGE){loadPantry();renderPantry();window.dispatchEvent(new CustomEvent("almanacphi:pantry-updated"));}
+    else if(e.key==="almanacphi.harvest.v1")renderPantry();
+  });
+  window.addEventListener("almanacphi:pantry-focus",e=>{
+    const origin=e.detail?.origin,id=e.detail?.id;
+    if(!["linked","standalone"].includes(origin)||typeof id!=="string")return;
+    renderPantry();
+    const target=[...$("pantryList").querySelectorAll(".pantry-entry[data-pantry-id]")].find(
+      el=>el.dataset.pantryId===id&&el.dataset.pantryOrigin===origin);
+    if(!target){$("pantryStockMessage").textContent="That pantry batch is no longer recorded. Refresh its recipe suggestions.";return;}
+    $("pantryList").querySelectorAll(".pantry-focused").forEach(el=>el.classList.remove("pantry-focused"));
+    target.classList.add("pantry-focused");
+    target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+    target.focus({preventScroll:true});
+    $("pantryStockMessage").textContent="Review the highlighted pantry batch. Nothing has been deducted automatically.";
+  });
   for(const id of ["preserveGuides","preserveCropPaths"]){
     $(id).addEventListener("click",e=>{const target=e.target.closest("button[data-method]");if(target)openGuide(target.dataset.method)});
   }

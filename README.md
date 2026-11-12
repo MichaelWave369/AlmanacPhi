@@ -4,7 +4,7 @@
 
 AlmanacPhi is a free, open-source farmer's almanac built as a lightweight offline-capable web app. It helps gardeners decide **what to plant, when to plant it, how to care for it**, and how to notice the changing seasons, sun and Moon without confusing traditions for validated horticultural science.
 
-## What's in v0.6
+## What's in v0.7
 
 - **19 crop guides**: vegetables, herbs, flowers, and roots, with seed depth, spacing, light, soil temperatures, water, feeding, harvest, common issues, and growing tips.
 - **Harvest-to-pantry preservation library**: 8 research-linked method guides, crop-specific pathways across all 19 crops, canning safety boundaries and seed-saving guidance.
@@ -12,6 +12,7 @@ AlmanacPhi is a free, open-source farmer's almanac built as a lightweight offlin
 - **Harvest Ledger**: link garden plantings to measured yields, track explicit cooking/preservation/sharing/compost allocations without overspending, and filter recipes based on crops still on hand. Export a local JSON ledger.
 - **Harvest-to-Pantry Bridge**: one explicit preservation transfer both allocates a harvest quantity and creates its linked pantry batch, without a second independent storage write. Linked batches show their provenance in the Pantry Ledger.
 - **Pantry Stock Ledger**: optional, explicit whole-container counts for linked and standalone pantry batches; track use, sharing and disposal without overdraw, and undo the latest mistaken removal.
+- **Pantry-Aware Kitchen**: browse recipes matching crops with recorded positive pantry container counts, review exact linked/standalone pantry batches from recipe details, and see cautious pantry hints on meal plans and shopping lists.
 - **Private pantry ledger**: record preservation batches and export their JSON history; shelf-stable canning entries require a recipe URL for the log (not a guarantee of process safety).
 - **Editable planting calendar**: crop windows calculated relative to your manually entered last spring and first fall frost dates.
 - **Sunlight explorer**: approximate day length calculated from an editable Northern Hemisphere latitude.
@@ -54,6 +55,10 @@ Node.js 20+ is enough. No `npm install` is required.
 5. Record what you plant in the journal. Make regular JSON exports if the records matter to you; browser storage may be cleared by the device or browser.
 
 **Critical limitations:** USDA plant hardiness zones indicate average extreme winter minimum temperatures for *perennial* survivability. They do not provide exact frost dates. Crop calendars are heuristics, not local weather forecasts or guarantees. Fall crops may require extra maturation time as daylight shortens. Days to maturity vary by cultivar and may be measured from transplant or sowing. No pesticide or chemical treatment instructions are implied.
+
+## Pantry-Aware Kitchen
+
+The [Pantry-Aware Kitchen](./PANTRY_KITCHEN.md) offers **crop-name matches only**, with optional filtering to batches that have a positive tracked container balance. It never assumes sufficient ingredients, equivalent fresh/preserved forms, food safety, or automated deductions. Recipe and meal-plan views can take you to the precise Pantry record for inspection and explicit stock activity.
 
 ## Pantry Stock Ledger
 

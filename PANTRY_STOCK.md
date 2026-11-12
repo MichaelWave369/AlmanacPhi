@@ -41,3 +41,7 @@ The Pantry Stock Ledger does not provide use-by dates, botulism detection, autom
 ## Further expansion
 
 Add a **pantry-aware cooking checklist** that reminds the grower to explicitly record a used container after preparing a meal. Do not silently deduct quantities from a recipe plan, and never equate a “cooked” checkbox with physical use.
+
+## v0.7 Pantry Kitchen connections
+
+Pantry batch counts can now inform Kitchen recipe **candidate hints**, including a direct link to review a specific batch. The Kitchen does not consume packages, infer freshness, or turn crop-name matches into ingredient equivalence. The grower must still explicitly record use under Pantry. See [PANTRY_KITCHEN.md](./PANTRY_KITCHEN.md).

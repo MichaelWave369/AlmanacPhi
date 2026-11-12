@@ -83,7 +83,7 @@ test("static page, cache and interfaces include optional container tracking",()=
   const harvestUI=readFileSync(new URL("../harvest-ui.js",import.meta.url),"utf8");
   const ui=readFileSync(new URL("../pantry-stock-ui.js",import.meta.url),"utf8");
   for(const id of ["pantryOpeningCount","harvestPantryOpeningCount","pantryStockMessage"])assert.match(html,new RegExp('id="'+id+'"'));
-  assert.match(sw,/almanacphi-v6/);
+  assert.ok(Number(sw.match(/almanacphi-v(\d+)/)?.[1])>=6);
   assert.match(sw,/pantry-stock\.js/);
   assert.match(sw,/pantry-stock-ui\.js/);
   assert.match(preservation,/renderBatchStockControls/);
