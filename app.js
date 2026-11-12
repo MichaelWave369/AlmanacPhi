@@ -2,6 +2,7 @@ import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {initPreservation,showCropPreservation} from "./preservation-ui.js";
 import {initKitchen,showCropKitchen} from "./kitchen-ui.js";
 import {initHarvest,setHarvestPlantings,showPlantHarvest} from "./harvest-ui.js";
+import {initCooking} from "./cooking-ui.js";
 import {DEFAULT_SETTINGS,PRESETS,parseISO,iso,addDays,formatted,datesValid,cropWindows,monthEvents,daylightHours,daylightDisplay,moonPhase,monthShift,seasonFor,seasonTip,lunarTradition,moonIlluminatedPath} from "./engine.js";
 const $=id=>document.getElementById(id);
 const STORAGE_SETTINGS="almanacphi.settings.v1",STORAGE_GARDEN="almanacphi.garden.v1";
@@ -180,6 +181,7 @@ function init(){
   initKitchen();
   initHarvest();
   setHarvestPlantings(garden);
+  initCooking();
   if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 }
 init();

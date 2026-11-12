@@ -1,6 +1,6 @@
-const CACHE="almanacphi-v7";
+const CACHE="almanacphi-v8";
 const CORE=["./","./index.html","./styles.css","./app.js","./engine.js","./crop-data.js",
-  "./preservation-data.js","./preservation-ui.js","./pantry-stock.js","./pantry-stock-ui.js","./recipe-data.js","./kitchen-ui.js","./pantry-kitchen.js","./harvest-data.js","./harvest-ui.js"];
+  "./preservation-data.js","./preservation-ui.js","./pantry-stock.js","./pantry-stock-ui.js","./recipe-data.js","./kitchen-ui.js","./pantry-kitchen.js","./cooking-data.js","./cooking-ui.js","./harvest-data.js","./harvest-ui.js"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
 });

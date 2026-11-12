@@ -164,6 +164,7 @@ export function initPreservation(){
     pantry=pantry.filter(x=>x.id!==button.dataset.pantryDelete);
     savePantry();renderPantry();
   });
+  window.addEventListener("almanacphi:cooking-source-updated",()=>{loadPantry();renderPantry();});
   installPantryStockEvents($("pantryList"),{getRecords:currentPantryRecords,updateStandalone:writeStandaloneStock,refresh:renderPantry,notify:text=>$("pantryStockMessage").textContent=text});
   $("pantryExport").addEventListener("click",()=>{
     const payload={app:"AlmanacPhi",kind:"preservation-pantry",version:2,exportedAt:new Date().toISOString(),pantry,linkedPantry:readLinkedPantry()};

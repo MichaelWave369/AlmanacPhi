@@ -58,3 +58,7 @@ The planner uses browser `localStorage` under `almanacphi.kitchen.v1`, not a ser
 ## v0.7 Pantry-Aware Kitchen
 
 Recipes and planned meals can now show possible matches from your standalone and harvest-linked pantry batches. A user-chosen **Review batch** action highlights the exact Pantry record; no stock is automatically spent. Only batches with a positive *recorded* container count qualify for the pantry-only recipe filter; untracked batches remain clearly unknown. A matching preserved crop does not establish an equivalent fresh ingredient or food safety. See [PANTRY_KITCHEN.md](./PANTRY_KITCHEN.md).
+
+## v0.8 Cooking Session Ledger
+
+You can now start a Cooking Session from a recipe or meal plan, then explicitly record source-specific harvest allocations and counted pantry container removals one at a time. The session history reflects authoritative Harvest and Pantry entries, and marking a session finished never deducts inventory. See [COOKING_SESSIONS.md](./COOKING_SESSIONS.md).

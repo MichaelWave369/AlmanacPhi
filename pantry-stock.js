@@ -19,7 +19,8 @@ export function validPantryUse(action){
     typeof action.id==="string"&&action.id.length>0&&action.id.length<=90&&
     validCalendarDate(action.date)&&validContainerCount(action.count)&&
     typeof action.reason==="string"&&Object.hasOwn(PANTRY_ACTIONS,action.reason)&&
-    typeof action.note==="string"&&action.note.length<=200;
+    typeof action.note==="string"&&action.note.length<=200&&
+    (action.sessionId===undefined||(typeof action.sessionId==="string"&&action.sessionId.length>0&&action.sessionId.length<=90));
 }
 export function validPantryStock(stock){
   if(!stock||typeof stock!=="object"||Array.isArray(stock)||!validContainerCount(stock.opening)||

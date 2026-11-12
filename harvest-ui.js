@@ -249,6 +249,15 @@ export function initHarvest(){
     allocations=allocations.filter(x=>x.id!==button.dataset.harvestUndo);
     save();renderAll();status("Allocation undone; quantity returned to its lot.");
   });
+  window.addEventListener("almanacphi:cooking-source-updated",()=>{
+    if(storageError)return;
+    try{
+      const latest=JSON.parse(localStorage.getItem(KEY)||"null");
+      if(latest&&checkLedger(latest.lots,latest.allocations)){
+        lots=latest.lots;allocations=latest.allocations;renderAll();
+      }
+    }catch(e){console.warn("Could not refresh harvest after cooking activity",e);}
+  });
   $("harvestExport").addEventListener("click",exportLedger);
   $("harvestRawBackup").addEventListener("click",()=>{
     let raw="";try{raw=localStorage.getItem(KEY)||"";}catch(e){status("Raw browser storage is unavailable.");return;}

@@ -90,7 +90,7 @@ test("Kitchen UI links to precise Pantry batches without auto-subtracting stock"
   assert.match(preserve,/data-pantry-id/);
   assert.match(preserve,/almanacphi:pantry-focus/);
   assert.match(preserve,/almanacphi:pantry-updated/);
-  assert.match(sw,/almanacphi-v7/);
+  assert.ok(Number(sw.match(/almanacphi-v(\d+)/)?.[1])>=7);
   assert.match(sw,/pantry-kitchen\.js/);
   assert.equal(RECIPES.length,16);
 });
