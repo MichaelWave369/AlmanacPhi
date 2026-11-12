@@ -49,7 +49,8 @@ export function validAllocation(entry){
     typeof entry.lotId==="string"&&entry.lotId.length>0&&entry.lotId.length<=90&&
     isRealDate(entry.date)&&validQuantity(entry.amount,entry.unit)&&
     Object.hasOwn(HARVEST_USES,entry.purpose)&&
-    typeof entry.note==="string"&&entry.note.length<=400;
+    typeof entry.note==="string"&&entry.note.length<=400&&
+    (entry.sessionId===undefined||(typeof entry.sessionId==="string"&&entry.sessionId.length>0&&entry.sessionId.length<=90));
 }
 // A linked pantry batch lives inside its harvest allocation, giving both views
 // one durable source of truth and avoiding two independent localStorage writes.

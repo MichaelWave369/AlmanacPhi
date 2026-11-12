@@ -183,3 +183,36 @@
 .kitchen-plan-entry .pantry-recipe-note{font-size:11px;font-weight:750;color:#53764e}
 .pantry-entry.pantry-focused{outline:3px solid #568457;outline-offset:2px;background:#f3f9ed}
 @media(max-width:550px){.kitchen-pantry-candidates li{flex-direction:column;align-items:stretch}.kitchen-pantry-candidates li button{align-self:start}}
+
+
+/* v0.8 Cooking Sessions */
+.cooking-ledger{margin-top:50px;border-top:1px solid var(--line);padding-top:34px}
+.cooking-ledger .section-heading h3{font:500 33px Georgia,serif;margin:0}
+.cooking-caution{border:1px solid #cbd8c1;border-left:4px solid #6f956f;border-radius:8px;background:#f0f5e9;color:#486348;font-size:12px;line-height:1.65;padding:15px 18px;margin:19px 0}
+.cooking-layout{display:grid;grid-template-columns:345px minmax(0,1fr);gap:16px}
+.cooking-form,.cooking-session-panel,.cooking-working{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:23px}
+.cooking-form h4,.cooking-session-panel h4,.cooking-working h4{font-size:20px;margin:0 0 15px}
+.cooking-form label,.cooking-use-form label{font-size:11px;font-weight:800;display:block;margin:11px 0 6px}
+.cooking-form select,.cooking-form input,.cooking-form textarea,.cooking-use-form select,.cooking-use-form input{width:100%;border:1px solid var(--line);border-radius:6px;background:white;min-height:39px;padding:10px;font-size:13px;color:var(--ink)}
+.cooking-form .button,.cooking-use-form .button{margin-top:15px}
+.cooking-session-title,.cooking-working-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.cooking-session-list{display:flex;flex-direction:column;gap:8px;max-height:350px;overflow:auto}
+.cooking-session-card{background:#f3f6ed;border:1px solid #d4e1ce;border-radius:8px;text-align:left;padding:14px;display:flex;flex-direction:column;gap:7px;color:var(--ink)}
+.cooking-session-card.active{border:2px solid #6a986c;background:#ecf3e8}
+.cooking-session-card strong{font-size:14px}
+.cooking-session-card span{font-size:11px;color:var(--muted)}
+.cooking-working{margin-top:17px}
+.cooking-working[hidden],.cooking-use-form[hidden]{display:none!important}
+.cooking-working-heading{margin-bottom:15px}
+.cooking-working-heading .eyebrow{margin-bottom:5px}
+.cooking-working-heading h4{font-family:Georgia,serif;font-size:25px;font-weight:500;margin:0}
+.cooking-use-form{background:#f3f7ef;border:1px solid #d4e0cf;border-radius:9px;padding:18px;margin-bottom:20px}
+.cooking-source-help{font-size:11px;line-height:1.6;color:#587052;margin:7px 0}
+.cooking-activity-panel{border-top:1px solid var(--line);padding-top:16px}
+.cooking-activity-panel h4{font-size:18px}
+.cooking-activity-list{display:flex;flex-direction:column;gap:8px;margin:13px 0}
+.cooking-activity-row{background:#f7f8f1;border-radius:6px;border:1px solid var(--line);padding:12px 15px;font-size:12px}
+.cooking-activity-row p{font-size:11px;color:var(--muted);margin:6px 0 0}
+.kitchen-plan-actions{flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:800px){.cooking-layout{grid-template-columns:1fr}}
+@media(max-width:550px){.cooking-form,.cooking-session-panel,.cooking-working{padding:16px}.cooking-working-heading .button{width:100%}.cooking-ledger .section-heading h3{font-size:27px}}

@@ -16,7 +16,7 @@
     <nav class="topnav" aria-label="Main navigation">
       <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#harvest">Harvest</a><a href="#field-notes">Field notes</a>
     </nav>
-    <span class="edition">THE LIVING FIELD GUIDE · V0.7</span>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.8</span>
   </header>
   <main id="main">
     <section class="hero" id="top">
@@ -141,6 +141,45 @@
           </div>
         </div>
       </div>
+      <section id="cooking" class="cooking-ledger" aria-label="Cooking session ledger">
+        <div class="section-heading"><div><p class="eyebrow">08 / COOKING SESSION LEDGER</p>
+        <h3>Know what went into dinner.</h3>
+        <p class="section-intro">Start a meal, then explicitly record each harvest quantity or pantry container you actually use. Every entry is saved in the original inventory ledger.</p></div></div>
+        <p class="cooking-caution" role="note"><b>No automatic deductions.</b> A recipe, shopping list, or “Finished” button never consumes food. Package counts do not convert to recipe measurements, and a pantry record is not a safety certification. Save each ingredient use individually.</p>
+        <div class="cooking-layout">
+          <form id="cookingForm" class="cooking-form">
+            <h4>Start a cooking session</h4>
+            <label for="cookingRecipe">Recipe</label><select id="cookingRecipe" required></select>
+            <div class="two-fields"><div><label for="cookingDate">Cooking date</label><input type="date" id="cookingDate" required></div>
+            <div><label for="cookingServings">Planned servings</label><select id="cookingServings" required></select></div></div>
+            <label for="cookingNote">Session notes</label><textarea id="cookingNote" rows="3" maxlength="300" placeholder="What we made, family notes, substitutions..."></textarea>
+            <button type="submit" class="button primary full">Start session +</button>
+            <p class="form-message" id="cookingMessage" role="status"></p>
+          </form>
+          <div class="cooking-session-panel">
+            <div class="cooking-session-title"><h4>Cooking history <span id="cookingSessionCount" class="count-bubble">0</span></h4>
+            <button type="button" id="cookingExport" class="link-button">Export sessions JSON</button></div>
+            <div id="cookingSessionList" class="cooking-session-list" aria-live="polite"></div>
+          </div>
+        </div>
+        <div id="cookingWorking" class="cooking-working" hidden>
+          <div class="cooking-working-heading"><div><p class="eyebrow">SELECTED COOKING SESSION</p><h4 id="cookingActiveTitle"></h4></div>
+          <button type="button" id="cookingFinish" class="button secondary">Mark session finished</button></div>
+          <form id="cookingUseForm" class="cooking-use-form">
+            <h4>Record a specific ingredient use</h4>
+            <label for="cookingSource">Recorded harvest lot or pantry batch</label><select id="cookingSource" required></select>
+            <p id="cookingSourceHelp" class="cooking-source-help"></p>
+            <div class="two-fields"><div><label for="cookingAmount" id="cookingAmountLabel">Amount used</label>
+              <input type="number" id="cookingAmount" min="0.001" step="any" required></div>
+              <div><label for="cookingUseNote">Ingredient note</label>
+              <input id="cookingUseNote" maxlength="200" placeholder="How this crop was used"></div></div>
+            <button type="submit" id="cookingUseSubmit" class="button dark full">Save this ingredient use −</button>
+          </form>
+          <div class="cooking-activity-panel"><h4>Ingredient history</h4><p class="data-note" id="cookingTotals"></p>
+          <div id="cookingActivity" class="cooking-activity-list" aria-live="polite"></div>
+          <p class="data-note">To correct a saved ingredient deduction, use <a href="#harvest">Harvest</a> or <a href="#preserve">Pantry</a>. This view reads the source ledger and reflects its current records.</p></div>
+        </div>
+      </section>
       <dialog id="kitchenRecipeDialog" aria-labelledby="kitchenRecipeTitle">
         <div class="dialog-top"><p class="eyebrow">ALMANACΦ · HARVEST KITCHEN</p><button id="kitchenRecipeDialogClose" type="button" class="dialog-close" aria-label="Close recipe">×</button></div>
         <div id="kitchenRecipeDialogBody"></div>

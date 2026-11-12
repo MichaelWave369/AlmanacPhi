@@ -104,7 +104,8 @@ function openRecipe(id){
     '<p>Matched by crop only. Preserved food may not work in a fresh recipe. Check the actual food, method, package and handling instructions. Neither counts nor batch dates certify safety.</p>'+
     '<div id="recipePantryMatches">'+pantryRecipeDetails(recipe)+'</div></section>'+
     '<div class="kitchen-recipe-safety"><b>Cook and eat, not can.</b> These are original fresh-cooking recipes, not validated shelf-stable preservation methods. Refrigerate perishable leftovers promptly and reheat leftovers to 165°F (74°C).</div>'+
-    '<button class="button primary full" type="button" data-plan-current>Plan this garden meal +</button>';
+    '<button class="button primary full" type="button" data-plan-current>Plan this garden meal +</button>'+ 
+    '<button class="button secondary full" style="margin-top:9px" type="button" data-cook-current>Start cooking session ↗</button>';
   renderRecipeIngredients();
   $("kitchenRecipeDialog").showModal();
 }
@@ -117,7 +118,7 @@ function renderPlan(){
     return '<article class="kitchen-plan-entry'+(p.done?" done":"")+'"><div><h4>'+esc(r.title)+'</h4><p>'+esc(p.date)+' · '+p.servings+' servings · '+r.minutes+' min</p>'+
       '<p class="pantry-recipe-note">'+esc(matchHint)+' · check suitability and safety</p>'+
       (p.note?'<p>'+esc(p.note)+'</p>':'')+'</div>'+
-      '<div class="kitchen-plan-actions"><button type="button" data-plan-pantry="'+esc(p.id)+'">Check pantry</button><button type="button" data-plan-toggle="'+esc(p.id)+'">'+(p.done?'Reopen':'Cooked')+'</button>'+
+      '<div class="kitchen-plan-actions"><button type="button" data-plan-cooking="'+esc(p.id)+'">Start cooking</button><button type="button" data-plan-pantry="'+esc(p.id)+'">Check pantry</button><button type="button" data-plan-toggle="'+esc(p.id)+'">'+(p.done?'Reopen':'Cooked')+'</button>'+
       '<button type="button" data-plan-remove="'+esc(p.id)+'" aria-label="Remove this meal from plan">×</button></div></article>';
   }).join(""):'<div class="empty-state">No meals planned. Open a recipe, then add it to your plan.</div>';
 }
@@ -173,6 +174,13 @@ export function initKitchen(){
       window.dispatchEvent(new CustomEvent("almanacphi:pantry-focus",{detail:{origin,id}}));
       return;
     }
+    if(e.target.closest("[data-cook-current]")&&RECIPE_BY_ID[activeRecipeId]){
+      window.dispatchEvent(new CustomEvent("almanacphi:cooking-start",{detail:{
+        recipeId:activeRecipeId,servings:Number($("recipeServings").value)
+      }}));
+      $("kitchenRecipeDialog").close();
+      return;
+    }
     if(!e.target.closest("[data-plan-current]")||!RECIPE_BY_ID[activeRecipeId])return;
     $("kitchenPlanRecipe").value=activeRecipeId;
     $("kitchenPlanServings").value=$("recipeServings").value;
@@ -193,6 +201,14 @@ export function initKitchen(){
     $("kitchenPlanNote").value="";renderPlan();
   });
   $("kitchenPlanList").addEventListener("click",e=>{
+    const cooking=e.target.closest("[data-plan-cooking]");
+    if(cooking){
+      const p=plans.find(x=>x.id===cooking.dataset.planCooking);
+      if(p)window.dispatchEvent(new CustomEvent("almanacphi:cooking-start",{detail:{
+        recipeId:p.recipeId,servings:p.servings,date:p.date,planId:p.id
+      }}));
+      return;
+    }
     const review=e.target.closest("[data-plan-pantry]");
     if(review){
       const plan=plans.find(p=>p.id===review.dataset.planPantry);
