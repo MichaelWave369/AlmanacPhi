@@ -1,5 +1,6 @@
 // Offline-first harvest arithmetic. Weight units may be converted; piece counts never convert to weight.
 import {CROP_BY_ID} from "./crop-data.js";
+import {validPantryEntry} from "./preservation-data.js";
 export const HARVEST_UNITS=Object.freeze({
   g:{label:"grams",kind:"mass",factor:1},
   kg:{label:"kilograms",kind:"mass",factor:1000},
@@ -50,6 +51,42 @@ export function validAllocation(entry){
     Object.hasOwn(HARVEST_USES,entry.purpose)&&
     typeof entry.note==="string"&&entry.note.length<=400;
 }
+// A linked pantry batch lives inside its harvest allocation, giving both views
+// one durable source of truth and avoiding two independent localStorage writes.
+// A link is a RECORD, never evidence that processing or a product is food-safe.
+export function safeRecipeSource(value){
+  if(typeof value!=="string")return false;
+  if(value==="")return true;
+  try{
+    const link=new URL(value);
+    return link.protocol==="https:"&&!!link.hostname&&!link.username&&!link.password;
+  }catch{return false;}
+}
+export function linkedPantryEntry(allocation,lot){
+  if(!allocation?.pantry||!lot)return null;
+  return {
+    id:allocation.id,crop:lot.crop,method:allocation.pantry.method,date:allocation.date,
+    quantity:allocation.pantry.quantity,location:allocation.pantry.location,
+    note:allocation.pantry.note,recipe:allocation.pantry.recipe,
+    sourceAllocationId:allocation.id,sourceHarvestLotId:lot.id,
+    harvestAmount:allocation.amount,harvestUnit:allocation.unit
+  };
+}
+export function validLinkedPantry(allocation,lot){
+  if(!allocation?.pantry)return true;
+  if(allocation.purpose!=="preserved"||!lot)return false;
+  const p=allocation.pantry;
+  if(!p||typeof p!=="object"||Array.isArray(p))return false;
+  const entry=linkedPantryEntry(allocation,lot);
+  return validPantryEntry(entry)&&entry.quantity.trim().length>0&&entry.location.trim().length>0&&
+    safeRecipeSource(entry.recipe)&&
+    (!["water-bath","pressure"].includes(entry.method)||entry.recipe!=="");
+}
+export function linkedPantryBatches(lots,allocations){
+  if(!checkLedger(lots,allocations))return [];
+  const map=new Map(lots.map(l=>[l.id,l]));
+  return allocations.filter(a=>a.pantry).map(a=>linkedPantryEntry(a,map.get(a.lotId)));
+}
 export function usedBase(lot,allocations){
   if(!validHarvest(lot)||!Array.isArray(allocations))throw new TypeError("Invalid lot or allocations");
   let used=0;
@@ -79,7 +116,7 @@ export function checkLedger(lots,allocations){
     if(!validAllocation(allocation)||allocIds.has(allocation.id))return false;
     allocIds.add(allocation.id);
     const lot=map.get(allocation.lotId);
-    if(!lot||!compatibleUnits(lot.unit,allocation.unit))return false;
+    if(!lot||!compatibleUnits(lot.unit,allocation.unit)||!validLinkedPantry(allocation,lot))return false;
   }
   for(const lot of lots)if(usedBase(lot,allocations)>toBase(lot.amount,lot.unit)+EPS)return false;
   return true;

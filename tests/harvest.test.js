@@ -86,7 +86,7 @@ test("harvest ledger UI and service worker are included in the static app",()=>{
   assert.match(app,/initHarvest\(\)/);
   assert.match(kitchen,/showHarvestKitchen/);
   assert.match(kitchen,/availableCropIds/);
-  assert.match(sw,/almanacphi-v4/);
+  assert.ok(Number(sw.match(/almanacphi-v(\d+)/)?.[1])>=4);
   assert.match(sw,/harvest-data\.js/);
   assert.match(sw,/harvest-ui\.js/);
 });

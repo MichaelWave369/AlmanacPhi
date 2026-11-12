@@ -1,4 +1,4 @@
-const CACHE="almanacphi-v4";
+const CACHE="almanacphi-v5";
 const CORE=["./","./index.html","./styles.css","./app.js","./engine.js","./crop-data.js",
   "./preservation-data.js","./preservation-ui.js","./recipe-data.js","./kitchen-ui.js","./harvest-data.js","./harvest-ui.js"];
 self.addEventListener("install",event=>{

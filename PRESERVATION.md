@@ -61,3 +61,7 @@ Open-pollinated seed generally reproduces more consistently than F1 hybrid seed.
 - [University of Minnesota: Seed Saving](https://extension.umn.edu/garden-and-home/yard-and-garden/gardening-in-minnesota/saving-vegetable-seeds)
 
 Compiled November 11, 2026. Source pages can change; consult the linked live publications before processing food.
+
+## v0.5 Harvest-to-Pantry Bridge
+
+The Harvest Ledger can create a **linked pantry batch** when the grower explicitly records a preserved/stored harvest allocation. This is stored as one harvest transaction and appears read-only in the Pantry inventory. Standalone pantry batches remain available and **do not** deduct crop inventory. A linked batch records intent and provenance, not proof of a safe preservation process; see [BRIDGE.md](./BRIDGE.md).

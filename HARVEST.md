@@ -6,12 +6,12 @@ The **Harvest Ledger** turns "I planted tomatoes" into a local, traceable record
 
 1. Log a planting in **My garden**. When you collect produce, use **Log yield** on that planting to preselect the crop and bed, or open **Harvest** directly.
 2. Enter the harvest date, positive quantity, unit and notes. That creates a **harvest lot**.
-3. When some of the produce is eaten, cooked, preserved, given away, spoiled or composted, select a lot and **Record use** with the amount and category.
+3. When some of the produce is eaten, cooked, preserved, given away, spoiled or composted, select a lot and **Record use** with the amount and category. For preservation, optionally create a linked pantry batch as part of that same allocation.
 4. Each recorded use is an **allocation**, reducing the lot's available balance. The app disallows spending more than remains.
 5. The Harvest overview summarizes unallocated quantities by crop. Select **Find meals using this harvest** to filter the Kitchen to recipes matching at least one available crop.
 6. Export the complete Harvest Ledger JSON when you need a backup.
 
-**Important:** Kitchen meal plans and Pantry Ledger batches do **not** automatically subtract stock. A cooked meal or preserved batch only affects harvest availability after you explicitly record the corresponding allocation. You can reference recipes or batch identifiers in the allocation notes. This prevents mysterious or inaccurate inventory changes.
+**Important:** Kitchen meal plans and **standalone** Pantry Ledger batches do **not** automatically subtract stock. A **linked** pantry batch is created from its explicit harvest allocation in a single harvest record. No meal plan ever deducts harvest stock automatically. You can reference recipes or batch identifiers in the allocation notes. This prevents mysterious or inaccurate inventory changes.
 
 ## How quantities are handled
 
@@ -43,3 +43,7 @@ Harvest lots optionally retain the planting ID from the Garden Journal. Deleting
 \`tests/harvest.test.js\` checks dates, invalid quantities, weight conversions, count/weight separation, overspending, undo math, ledger integrity, crop summaries and static site integration.
 
 Possible future additions include weighing harvests directly from a smart scale, scanned batch IDs for pantry allocations, consumption summaries, CSV import, more languages, and printable harvest records. Each integration should keep the allocation trail explicit and preserve local-first operation.
+
+## v0.5 linked pantry transfers
+
+Use **Preserved or stored → Also create a linked Pantry Ledger batch** to create both records together. The Pantry view shows the linked batch but corrections and undo happen in Harvest, protecting provenance and quantities. Existing standalone pantry entries remain independent. See [BRIDGE.md](./BRIDGE.md).

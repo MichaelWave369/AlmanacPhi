@@ -1,5 +1,6 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
-import {HARVEST_UNITS,HARVEST_USES,validHarvest,validAllocation,checkLedger,canAllocate,remainingBase,fromBase,formatHarvestAmount,cropAvailability} from "./harvest-data.js";
+import {HARVEST_UNITS,HARVEST_USES,validHarvest,validAllocation,checkLedger,canAllocate,remainingBase,fromBase,formatHarvestAmount,cropAvailability,safeRecipeSource,validLinkedPantry} from "./harvest-data.js";
+import {preservationForCrop,PRESERVATION_BY_ID} from "./preservation-data.js";
 import {showHarvestKitchen} from "./kitchen-ui.js";
 
 const $=id=>document.getElementById(id);
@@ -78,6 +79,26 @@ function updateUsePreview(){
   $("harvestUseAmount").step=lot?.unit==="each"?"1":"any";
   $("harvestUseAmount").min=lot?.unit==="each"?"1":"0.001";
   $("harvestUseAmount").max=lot?String(avail):"";
+  updateTransferMethods();
+}
+function updateTransferFields(){
+  const preserved=$("harvestUsePurpose").value==="preserved";
+  const linked=preserved&&$("harvestLinkPantry").checked;
+  $("harvestPantryLinkBox").hidden=!preserved;
+  $("harvestPantryFields").hidden=!linked;
+  for(const field of $("harvestPantryFields").querySelectorAll("input,select,textarea"))field.disabled=!linked||storageError;
+  $("harvestPantryQuantity").required=linked;
+  $("harvestPantryLocation").required=linked;
+  const canning=["water-bath","pressure"].includes($("harvestPantryMethod").value);
+  $("harvestPantryRecipe").required=linked&&canning;
+  $("harvestPantryRecipe").placeholder=canning?"https://nchfp.uga.edu/... (required)":"Optional HTTPS source link";
+}
+function updateTransferMethods(){
+  const lot=lots.find(x=>x.id===$("harvestUseLot").value),selected=$("harvestPantryMethod").value;
+  const info=lot?preservationForCrop(lot.crop):null;
+  $("harvestPantryMethod").innerHTML=(info?.guides||[]).map(g=>'<option value="'+g.id+'">'+escapeHtml(g.name)+'</option>').join("");
+  if(info?.methods.includes(selected))$("harvestPantryMethod").value=selected;
+  updateTransferFields();
 }
 function renderStock(){
   const rows=cropAvailability(lots,allocations);
@@ -116,7 +137,7 @@ function renderAllocations(){
       const lot=lots.find(x=>x.id===a.lotId);
       return '<article class="harvest-activity"><div><b>'+escapeHtml(HARVEST_USES[a.purpose])+'</b> · '+
         escapeHtml(CROP_BY_ID[lot.crop].name)+' · '+escapeHtml(formatHarvestAmount(a.amount,a.unit))+
-        '<p>'+escapeHtml(a.date)+(a.note?' · '+escapeHtml(a.note):'')+'</p></div>'+
+        '<p>'+escapeHtml(a.date)+(a.note?' · '+escapeHtml(a.note):'')+'</p>'+ (a.pantry?'<p class="harvest-linked-badge">Linked pantry: '+escapeHtml(PRESERVATION_BY_ID[a.pantry.method].name)+' · '+escapeHtml(a.pantry.quantity)+' · '+escapeHtml(a.pantry.location)+'</p>':'')+'</div>'+
         '<button type="button" data-harvest-undo="'+escapeHtml(a.id)+'" aria-label="Undo allocation">Undo</button></article>';
     }).join(""):'<p class="subtle">No allocations recorded. Available quantities only change when you explicitly log a use.</p>';
 }
@@ -136,6 +157,9 @@ export function initHarvest(){
   $("harvestCrop").addEventListener("change",()=>{plantOptions();const p=plantings.find(x=>x.id===$("harvestSourcePlant").value);if(p)$("harvestBed").value=p.bed||"";});
   $("harvestSourcePlant").addEventListener("change",()=>{const p=plantings.find(x=>x.id===$("harvestSourcePlant").value);if(p)$("harvestBed").value=p.bed||"";});
   $("harvestUseLot").addEventListener("change",updateUsePreview);
+  $("harvestUsePurpose").addEventListener("change",updateTransferFields);
+  $("harvestLinkPantry").addEventListener("change",updateTransferFields);
+  $("harvestPantryMethod").addEventListener("change",updateTransferFields);
   $("harvestForm").addEventListener("submit",e=>{
     e.preventDefault();if(storageError)return;
     if(lots.length>=MAX_LOTS){status("Harvest limit reached. Export data and remove unused lots first.");return;}
@@ -157,10 +181,27 @@ export function initHarvest(){
     }
     const entry={id:crypto.randomUUID(),lotId:lot.id,amount,unit:lot.unit,date:$("harvestUseDate").value,
       purpose:$("harvestUsePurpose").value,note:$("harvestUseNote").value.trim().slice(0,400)};
+    if(entry.purpose==="preserved"&&$("harvestLinkPantry").checked){
+      const recipe=$("harvestPantryRecipe").value.trim();
+      if(!safeRecipeSource(recipe)){
+        status("The source recipe must be a valid HTTPS URL, or empty for non-canning methods.");return;
+      }
+      entry.pantry={
+        method:$("harvestPantryMethod").value,quantity:$("harvestPantryQuantity").value.trim().slice(0,80),
+        location:$("harvestPantryLocation").value.trim().slice(0,100),
+        note:$("harvestPantryNote").value.trim().slice(0,500),recipe:recipe.slice(0,500)
+      };
+      if(!validLinkedPantry(entry,lot)){
+        status("The linked pantry batch needs a valid method, quantity, location and a tested-recipe HTTPS link for canning. A link does not prove safety.");return;
+      }
+    }
     if(!validAllocation(entry)||!checkLedger(lots,[...allocations,entry])){status("Allocation could not be validated.");return;}
     allocations.push(entry);
-    status(save()?"Use recorded. Available harvest updated.":"Allocation added for this session; browser storage is unavailable.");
-    $("harvestUseAmount").value="";$("harvestUseNote").value="";renderAll();
+    const linked=!!entry.pantry;
+    status(save()?linked?"Harvest transferred and linked pantry batch recorded. Neither record certifies food safety.":"Use recorded. Available harvest updated.":"Allocation recorded for this session; browser storage is unavailable.");
+    $("harvestUseAmount").value="";$("harvestUseNote").value="";
+    if(linked){$("harvestPantryQuantity").value="";$("harvestPantryLocation").value="";$("harvestPantryRecipe").value="";$("harvestPantryNote").value="";}
+    renderAll();
   });
   $("harvestLots").addEventListener("click",e=>{
     const allocationButton=e.target.closest("[data-harvest-allocate]");
@@ -173,7 +214,9 @@ export function initHarvest(){
   });
   $("harvestAllocations").addEventListener("click",e=>{
     const button=e.target.closest("[data-harvest-undo]");if(!button||storageError)return;
-    if(!window.confirm("Undo this harvest use and restore its quantity?"))return;
+    const previous=allocations.find(x=>x.id===button.dataset.harvestUndo);
+    if(!previous)return;
+    if(!window.confirm(previous.pantry?"Undo this harvest transfer AND remove its linked pantry batch? Export a backup first if needed.":"Undo this harvest use and restore its quantity?"))return;
     allocations=allocations.filter(x=>x.id!==button.dataset.harvestUndo);
     save();renderAll();status("Allocation undone; quantity returned to its lot.");
   });

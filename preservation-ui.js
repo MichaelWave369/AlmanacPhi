@@ -1,5 +1,6 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {PRESERVATION_GUIDES,PRESERVATION_BY_ID,preservationForCrop,validPantryEntry} from "./preservation-data.js";
+import {linkedPantryBatches} from "./harvest-data.js";
 const $=id=>document.getElementById(id);
 const STORAGE="almanacphi.pantry.v1",LIMIT=500;
 const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
@@ -61,16 +62,24 @@ function openGuide(id){
     <p>No canning processing times or pressures are supplied here. Always follow the full official process for your specific food, recipe, jar, equipment, and elevation.</p></div>`;
   $("preserveDialog").showModal();
 }
+function readLinkedPantry(){
+  try{
+    const saved=JSON.parse(localStorage.getItem("almanacphi.harvest.v1")||"null");
+    return saved?linkedPantryBatches(saved.lots,saved.allocations):[];
+  }catch(e){console.warn("Linked harvest data unavailable",e);return [];}
+}
 function renderPantry(){
-  $("pantryCount").textContent=String(pantry.length);
-  if(!pantry.length){$("pantryList").innerHTML=`<div class="empty-state">No preserved batches logged yet. The pantry awaits its first harvest.</div>`;return}
-  $("pantryList").innerHTML=[...pantry].sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{
+  const linked=readLinkedPantry();
+  const entries=[...pantry.map(x=>({...x,origin:"standalone"})),...linked.map(x=>({...x,origin:"linked"}))];
+  $("pantryCount").textContent=String(entries.length);
+  if(!entries.length){$("pantryList").innerHTML=`<div class="empty-state">No preserved batches logged yet. The pantry awaits its first harvest.</div>`;return}
+  $("pantryList").innerHTML=entries.sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{
     const c=CROP_BY_ID[x.crop],method=PRESERVATION_BY_ID[x.method];
     const url=trustedHttps(x.recipe);
-    return `<article class="pantry-entry"><div><h5>${safe(c.emoji)} ${safe(c.name)} · ${safe(x.quantity)}</h5>
-      <p><b>${safe(method.name)}</b> · ${safe(x.date)} · ${safe(x.location)}</p>${x.note?`<p>${safe(x.note)}</p>`:""}
+    return `<article class="pantry-entry ${x.origin==="linked"?"linked-pantry-entry":""}"><div><h5>${safe(c.emoji)} ${safe(c.name)} · ${safe(x.quantity)}</h5>
+      <p><b>${safe(method.name)}</b> · ${safe(x.date)} · ${safe(x.location)}</p>${x.origin==="linked"?`<p class="pantry-link-tag">Linked from harvest · ${safe(x.harvestAmount)} ${safe(x.harvestUnit)} transferred</p>`:`<p class="pantry-link-tag">Standalone batch · no harvest deduction</p>`}${x.note?`<p>${safe(x.note)}</p>`:""}
       ${url?`<a href="${safe(url)}" target="_blank" rel="noopener noreferrer">Recorded recipe source ↗</a>`:""}</div>
-      <button type="button" class="link-button danger" data-pantry-delete="${safe(x.id)}" aria-label="Remove ${safe(c.name)} batch">Remove</button></article>`;
+      ${x.origin==="linked"?`<a class="pantry-harvest-link" href="#harvest">Manage in Harvest ↗</a>`:`<button type="button" class="link-button danger" data-pantry-delete="${safe(x.id)}" aria-label="Remove ${safe(c.name)} batch">Remove</button>`}</article>`;
   }).join("");
 }
 export function showCropPreservation(cropId){
@@ -86,6 +95,8 @@ export function initPreservation(){
   $("preserveCrop").addEventListener("change",renderPaths);
   $("pantryCrop").addEventListener("change",fillMethods);
   $("pantryMethod").addEventListener("change",syncCanningField);
+  window.addEventListener("almanacphi:harvest-updated",renderPantry);
+  window.addEventListener("storage",e=>{if(e.key==="almanacphi.harvest.v1")renderPantry();});
   for(const id of ["preserveGuides","preserveCropPaths"]){
     $(id).addEventListener("click",e=>{const target=e.target.closest("button[data-method]");if(target)openGuide(target.dataset.method)});
   }
@@ -113,7 +124,7 @@ export function initPreservation(){
     savePantry();renderPantry();
   });
   $("pantryExport").addEventListener("click",()=>{
-    const payload={app:"AlmanacPhi",kind:"preservation-pantry",version:1,exportedAt:new Date().toISOString(),pantry};
+    const payload={app:"AlmanacPhi",kind:"preservation-pantry",version:2,exportedAt:new Date().toISOString(),pantry,linkedPantry:readLinkedPantry()};
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
     const url=URL.createObjectURL(blob),a=document.createElement("a");
     a.href=url;a.download=`almanacphi-pantry-${localDate()}.json`;document.body.append(a);a.click();a.remove();
