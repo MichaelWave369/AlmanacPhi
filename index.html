@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#183b2d">
-  <meta name="description" content="AlmanacPhi: an offline-friendly growing calendar, crop guides, safe preservation pathways, fresh garden recipes, and a private planting and meal journal.">
+  <meta name="description" content="AlmanacPhi: offline-first growing and harvesting, preservation field guides, pantry inventory and garden-to-table recipes with traceable records.">
   <title>AlmanacΦ | Grow with the seasons</title>
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./app.js"></script>
@@ -16,7 +16,7 @@
     <nav class="topnav" aria-label="Main navigation">
       <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#harvest">Harvest</a><a href="#field-notes">Field notes</a>
     </nav>
-    <span class="edition">THE LIVING FIELD GUIDE · V0.6</span>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.7</span>
   </header>
   <main id="main">
     <section class="hero" id="top">
@@ -114,6 +114,9 @@
         <label class="kitchen-select-label" for="recipeSeasonFilter">Season <select id="recipeSeasonFilter"><option value="all">Any season</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="fall">Autumn</option><option value="winter">Winter</option></select></label>
       </div>
       <label class="kitchen-harvest-toggle"><input type="checkbox" id="recipeFromHarvest"> Show recipes using at least one crop from my Harvest Ledger</label>
+      <label class="kitchen-harvest-toggle"><input type="checkbox" id="recipeFromPantry"> Show recipes matching at least one crop with a positive tracked pantry container count</label>
+      <p class="kitchen-pantry-summary" id="kitchenPantrySummary" aria-live="polite"></p>
+      <p class="data-note">Pantry suggestions only match crop names. They do not guarantee ingredient quantities, suitable preservation form, shelf life, safety, or that a meal is ready to prepare. Review the batch before use.</p>
       <div id="kitchenRecipeCards" class="kitchen-recipe-grid" aria-live="polite"></div>
       <p id="kitchenRecipeCount" class="subtle"></p>
       <div id="kitchenMealPlanner" class="kitchen-planner">
