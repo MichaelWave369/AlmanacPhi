@@ -16,7 +16,7 @@
     <nav class="topnav" aria-label="Main navigation">
       <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#harvest">Harvest</a><a href="#field-notes">Field notes</a>
     </nav>
-    <span class="edition">THE LIVING FIELD GUIDE · V0.4</span>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.5</span>
   </header>
   <main id="main">
     <section class="hero" id="top">
@@ -97,7 +97,7 @@
           <p class="pantry-disclaimer">A log entry is <b>not</b> a safety approval. For canned food, verify the actual process against your exact tested recipe.</p>
           <button type="submit" class="button dark full">Save batch to pantry</button><p id="pantryMessage" class="form-message" role="status"></p>
         </form>
-        <div class="pantry-list-wrap"><div class="journal-list-heading"><h4>Pantry inventory <span id="pantryCount" class="count-bubble">0</span></h4><button id="pantryExport" type="button" class="link-button">Export pantry JSON</button></div><div id="pantryList" class="pantry-list" aria-live="polite"></div></div>
+        <div class="pantry-list-wrap"><div class="journal-list-heading"><h4>Pantry records <span id="pantryCount" class="count-bubble">0</span></h4><button id="pantryExport" type="button" class="link-button">Export pantry JSON</button></div><p class="data-note">Linked batches come from the Harvest Ledger and are managed there. Standalone batches stay independent. Entries track preparation, not food safety, freshness, or what remains in a container.</p><div id="pantryList" class="pantry-list" aria-live="polite"></div></div>
       </div>
       <dialog id="preserveDialog" aria-labelledby="preserveDialogTitle"><div class="dialog-top"><p class="eyebrow">HARVEST PRESERVATION GUIDE</p><button type="button" id="preserveDialogClose" class="dialog-close" aria-label="Close preservation guide">×</button></div><div id="preserveDialogBody"></div></dialog>
     </section>
@@ -157,7 +157,7 @@
     </section>
     <section id="harvest" class="section-wrap harvest-section">
       <div class="section-heading"><div><p class="eyebrow">06 / FOLLOW THE HARVEST</p><h2>Know what you really have.</h2>
-        <p class="section-intro">Record what you pick, connect it to your garden journal, and account for how you use it. Quantities are never subtracted from recipes or preservation records automatically.</p></div></div>
+        <p class="section-intro">Record what you pick, connect it to your garden journal, and account for how you use it. An explicit preservation transfer can now link its harvest deduction to a batch in the Pantry Ledger.</p></div></div>
       <div class="harvest-clarity" role="note"><b>Traceable, not magical.</b> Each harvest is a lot. Every use is an explicit allocation, so the same pounds of tomatoes cannot be counted twice. Weight units convert to one another; individual items are tracked separately. Inventory is a record, <b>not</b> a freshness or food-safety assessment.</div>
       <div class="harvest-stock-panel"><div class="harvest-stock-heading"><div><p class="eyebrow">AVAILABLE FROM YOUR GARDEN</p><h3>Harvest on hand <span id="harvestStockCount" class="count-bubble">0</span></h3></div>
       <button type="button" id="harvestCookSuggestions" class="button primary">Find meals using this harvest ↗</button></div>
@@ -184,7 +184,21 @@
           <label for="harvestUsePurpose">Where did it go?</label><select id="harvestUsePurpose" required></select>
           <label for="harvestUseNote">Reference / notes</label><textarea id="harvestUseNote" rows="3" maxlength="400" placeholder="Pesto batch, family dinner, donated to neighbors..."></textarea>
           <button type="submit" class="button primary full" id="harvestUseSave">Record use −</button>
-          <p class="harvest-use-explainer">Choose “Preserved or stored” here, then separately log its batch in the <a href="#preserve">Pantry Ledger</a>. These records do not silently sync, and the Pantry Ledger does not subtract harvest quantities automatically.</p>
+          <div id="harvestPantryLinkBox" class="harvest-pantry-transfer" hidden>
+            <label class="harvest-pantry-check"><input id="harvestLinkPantry" type="checkbox" checked> Also create a linked Pantry Ledger batch with this transfer</label>
+            <div id="harvestPantryFields">
+              <p class="harvest-pantry-hint">One record safely connects the harvest deduction to the pantry batch. Exact canning methods still require independently tested processing instructions.</p>
+              <label for="harvestPantryMethod">Preservation method</label><select id="harvestPantryMethod"></select>
+              <div class="two-fields">
+                <div><label for="harvestPantryQuantity">Finished batch quantity</label><input id="harvestPantryQuantity" maxlength="80" placeholder="4 jars / 2 freezer bags" required></div>
+                <div><label for="harvestPantryLocation">Storage location</label><input id="harvestPantryLocation" maxlength="100" placeholder="Freezer / pantry shelf" required></div>
+              </div>
+              <label for="harvestPantryRecipe">Tested recipe source URL (mandatory for canning)</label><input type="url" id="harvestPantryRecipe" maxlength="500" placeholder="https://nchfp.uga.edu/...">
+              <label for="harvestPantryNote">Batch details</label><textarea id="harvestPantryNote" maxlength="500" rows="2" placeholder="Jar size, method, variety, batch notes..."></textarea>
+              <p class="harvest-pantry-hint">The harvested amount and packaged quantity are deliberately separate. Logging a source link does not verify that a canning process was safe.</p>
+            </div>
+          </div>
+          <p class="harvest-use-explainer">When you choose <b>Preserved or stored</b>, you can create a linked pantry batch in one step, or record an unlinked harvest use. Standalone pantry entries remain available in the <a href="#preserve">Pantry Ledger</a>.</p>
         </form>
       </div>
       <div class="harvest-records-layout">

@@ -136,3 +136,15 @@
 .journal-entry .journal-btns{flex-wrap:wrap;justify-content:end}
 @media(max-width:850px){.harvest-layout,.harvest-records-layout{grid-template-columns:1fr}.harvest-stock-list{grid-template-columns:1fr}}
 @media(max-width:560px){.harvest-section{padding:48px 16px}.harvest-form,.harvest-record-box,.harvest-stock-panel{padding:17px}.harvest-stock-heading .button{width:100%}.harvest-lot-actions{justify-content:flex-start}.harvest-lot{flex-direction:column}.harvest-lot-actions{flex-direction:row}}
+
+
+/* Harvest-to-Pantry Bridge v0.5 */
+.harvest-pantry-transfer{background:#eef4e8;border:1px solid #c3d5b7;border-radius:10px;padding:16px;margin-top:16px}
+.harvest-pantry-transfer[hidden],.harvest-pantry-transfer [hidden]{display:none!important}
+.harvest-pantry-check{display:flex!important;align-items:center;gap:10px;font-weight:800!important;font-size:13px!important;margin:0 0 12px!important;line-height:1.5}
+.harvest-pantry-check input{width:17px!important;min-height:17px!important;height:17px;flex:none;accent-color:var(--forest)}
+.harvest-pantry-hint{font-size:11px;line-height:1.7;color:#49694c;margin:10px 0}
+.harvest-linked-badge,.pantry-link-tag{display:block;background:#e7f1df;color:#456f49;font-size:11px!important;line-height:1.55;padding:7px 9px;border-radius:6px;margin:8px 0!important}
+.pantry-harvest-link{font-size:11px;align-self:start;color:var(--forest);font-weight:800;white-space:nowrap;text-underline-offset:2px}
+.linked-pantry-entry{border-color:#b3cfae;background:#f5faf1}
+@media(max-width:560px){.harvest-pantry-transfer{padding:12px}.linked-pantry-entry{flex-direction:column}}
