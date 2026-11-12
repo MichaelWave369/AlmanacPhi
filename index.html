@@ -16,7 +16,7 @@
     <nav class="topnav" aria-label="Main navigation">
       <a href="#calendar">Calendar</a><a href="#crops">Crop library</a><a href="#preserve">Preserve</a><a href="#kitchen">Kitchen</a><a href="#journal">My garden</a><a href="#harvest">Harvest</a><a href="#field-notes">Field notes</a>
     </nav>
-    <span class="edition">THE LIVING FIELD GUIDE · V0.5</span>
+    <span class="edition">THE LIVING FIELD GUIDE · V0.6</span>
   </header>
   <main id="main">
     <section class="hero" id="top">
@@ -91,13 +91,14 @@
           <label for="pantryCrop">Crop</label><select id="pantryCrop" required></select>
           <label for="pantryMethod">Method</label><select id="pantryMethod" required></select>
           <div class="two-fields"><div><label for="pantryDate">Date prepared</label><input type="date" id="pantryDate" required></div><div><label for="pantryQuantity">Quantity</label><input id="pantryQuantity" maxlength="80" placeholder="4 jars / 2 bags" required></div></div>
+          <label for="pantryOpeningCount">Containers to track (optional, whole number)</label><input id="pantryOpeningCount" type="number" min="1" max="100000" step="1" placeholder="e.g. 4 jars, enter 4"><p class="pantry-count-hint">Track actual containers, not guessed servings or weight. Leave blank to skip counting.</p>
           <label for="pantryLocation">Where is it stored?</label><input id="pantryLocation" maxlength="100" placeholder="Pantry shelf A / Freezer" required>
           <label for="pantryRecipe">Source recipe URL (required for canning)</label><input id="pantryRecipe" type="url" maxlength="500" placeholder="https://nchfp.uga.edu/...">
           <label for="pantryNote">Batch notes</label><textarea id="pantryNote" maxlength="500" rows="3" placeholder="Variety, lot, recipe, equipment, elevation, adjustments..."></textarea>
           <p class="pantry-disclaimer">A log entry is <b>not</b> a safety approval. For canned food, verify the actual process against your exact tested recipe.</p>
           <button type="submit" class="button dark full">Save batch to pantry</button><p id="pantryMessage" class="form-message" role="status"></p>
         </form>
-        <div class="pantry-list-wrap"><div class="journal-list-heading"><h4>Pantry records <span id="pantryCount" class="count-bubble">0</span></h4><button id="pantryExport" type="button" class="link-button">Export pantry JSON</button></div><p class="data-note">Linked batches come from the Harvest Ledger and are managed there. Standalone batches stay independent. Entries track preparation, not food safety, freshness, or what remains in a container.</p><div id="pantryList" class="pantry-list" aria-live="polite"></div></div>
+        <div class="pantry-list-wrap"><div class="journal-list-heading"><h4>Pantry records <span id="pantryCount" class="count-bubble">0</span></h4><button id="pantryExport" type="button" class="link-button">Export pantry JSON</button></div><p class="data-note">Linked batches come from the Harvest Ledger and are managed there. Standalone batches stay independent. Entries track preparation, not food safety, freshness, or what remains in a container.</p><p class="form-message" id="pantryStockMessage" role="status"></p><div id="pantryList" class="pantry-list" aria-live="polite"></div></div>
       </div>
       <dialog id="preserveDialog" aria-labelledby="preserveDialogTitle"><div class="dialog-top"><p class="eyebrow">HARVEST PRESERVATION GUIDE</p><button type="button" id="preserveDialogClose" class="dialog-close" aria-label="Close preservation guide">×</button></div><div id="preserveDialogBody"></div></dialog>
     </section>
@@ -193,6 +194,7 @@
                 <div><label for="harvestPantryQuantity">Finished batch quantity</label><input id="harvestPantryQuantity" maxlength="80" placeholder="4 jars / 2 freezer bags" required></div>
                 <div><label for="harvestPantryLocation">Storage location</label><input id="harvestPantryLocation" maxlength="100" placeholder="Freezer / pantry shelf" required></div>
               </div>
+              <label for="harvestPantryOpeningCount">Containers to track (optional, whole number)</label><input id="harvestPantryOpeningCount" type="number" min="1" max="100000" step="1" placeholder="e.g. 2 freezer bags, enter 2"><p class="pantry-count-hint">The packaged quantity text remains separate from this optional tracked count.</p>
               <label for="harvestPantryRecipe">Tested recipe source URL (mandatory for canning)</label><input type="url" id="harvestPantryRecipe" maxlength="500" placeholder="https://nchfp.uga.edu/...">
               <label for="harvestPantryNote">Batch details</label><textarea id="harvestPantryNote" maxlength="500" rows="2" placeholder="Jar size, method, variety, batch notes..."></textarea>
               <p class="harvest-pantry-hint">The harvested amount and packaged quantity are deliberately separate. Logging a source link does not verify that a canning process was safe.</p>

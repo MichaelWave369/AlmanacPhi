@@ -1,6 +1,8 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {PRESERVATION_GUIDES,PRESERVATION_BY_ID,preservationForCrop,validPantryEntry} from "./preservation-data.js";
 import {linkedPantryBatches} from "./harvest-data.js";
+import {createPantryStock,validPantryStock} from "./pantry-stock.js";
+import {renderBatchStockControls,installPantryStockEvents} from "./pantry-stock-ui.js";
 const $=id=>document.getElementById(id);
 const STORAGE="almanacphi.pantry.v1",LIMIT=500;
 const safe=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
@@ -68,9 +70,24 @@ function readLinkedPantry(){
     return saved?linkedPantryBatches(saved.lots,saved.allocations):[];
   }catch(e){console.warn("Linked harvest data unavailable",e);return [];}
 }
+function writeStandaloneStock(id,nextStock){
+  if(!validPantryStock(nextStock))return {ok:false,message:"Invalid container count or removal history."};
+  const index=pantry.findIndex(x=>x.id===id);
+  if(index<0)return {ok:false,message:"Standalone batch not found."};
+  const next=pantry.map((x,i)=>i===index?{...x,stock:nextStock}:x);
+  if(next.some(x=>!validPantryEntry(x)))return {ok:false,message:"Updated pantry records did not pass validation."};
+  try{
+    localStorage.setItem(STORAGE,JSON.stringify(next));
+    pantry=next;
+    return {ok:true};
+  }catch(e){console.warn("Pantry stock update could not be persisted",e);return {ok:false,message:"Browser storage could not save this change. The previous count was preserved."};}
+}
+function currentPantryRecords(){
+  return [...pantry.map(x=>({...x,origin:"standalone"})),
+    ...readLinkedPantry().map(x=>({...x,origin:"linked"}))];
+}
 function renderPantry(){
-  const linked=readLinkedPantry();
-  const entries=[...pantry.map(x=>({...x,origin:"standalone"})),...linked.map(x=>({...x,origin:"linked"}))];
+  const entries=currentPantryRecords();
   $("pantryCount").textContent=String(entries.length);
   if(!entries.length){$("pantryList").innerHTML=`<div class="empty-state">No preserved batches logged yet. The pantry awaits its first harvest.</div>`;return}
   $("pantryList").innerHTML=entries.sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{
@@ -78,7 +95,8 @@ function renderPantry(){
     const url=trustedHttps(x.recipe);
     return `<article class="pantry-entry ${x.origin==="linked"?"linked-pantry-entry":""}"><div><h5>${safe(c.emoji)} ${safe(c.name)} · ${safe(x.quantity)}</h5>
       <p><b>${safe(method.name)}</b> · ${safe(x.date)} · ${safe(x.location)}</p>${x.origin==="linked"?`<p class="pantry-link-tag">Linked from harvest · ${safe(x.harvestAmount)} ${safe(x.harvestUnit)} transferred</p>`:`<p class="pantry-link-tag">Standalone batch · no harvest deduction</p>`}${x.note?`<p>${safe(x.note)}</p>`:""}
-      ${url?`<a href="${safe(url)}" target="_blank" rel="noopener noreferrer">Recorded recipe source ↗</a>`:""}</div>
+      ${url?`<a href="${safe(url)}" target="_blank" rel="noopener noreferrer">Recorded recipe source ↗</a>`:""}
+      ${renderBatchStockControls(x)}</div>
       ${x.origin==="linked"?`<a class="pantry-harvest-link" href="#harvest">Manage in Harvest ↗</a>`:`<button type="button" class="link-button danger" data-pantry-delete="${safe(x.id)}" aria-label="Remove ${safe(c.name)} batch">Remove</button>`}</article>`;
   }).join("");
 }
@@ -111,11 +129,17 @@ export function initPreservation(){
     if(["water-bath","pressure"].includes(method)&&!trustedHttps(recipe)){
       showMessage("Canning batches require an HTTPS link to your tested recipe. A link is not proof of safety.");return;
     }
-    const item={id:crypto.randomUUID(),crop,method,date,quantity:$("pantryQuantity").value.trim().slice(0,80),location:$("pantryLocation").value.trim().slice(0,100),note:$("pantryNote").value.trim().slice(0,500),recipe:recipe.slice(0,500)};
+    let stock;
+    const countText=$("pantryOpeningCount").value.trim();
+    if(countText){
+      try{stock=createPantryStock(Number(countText));}
+      catch(e){showMessage("Container count must be a positive whole number up to 100,000.");return;}
+    }
+    const item={id:crypto.randomUUID(),crop,method,date,quantity:$("pantryQuantity").value.trim().slice(0,80),location:$("pantryLocation").value.trim().slice(0,100),note:$("pantryNote").value.trim().slice(0,500),recipe:recipe.slice(0,500),...(stock?{stock}:{})};
     if(!item.quantity||!item.location||!validPantryEntry(item)){showMessage("Choose a crop/method and fill in the batch details.");return}
     pantry.push(item);
     showMessage(savePantry()?"Batch recorded on this device. Recording never certifies a canning process.":"Batch added for this session; browser storage could not save it.");
-    $("pantryQuantity").value="";$("pantryNote").value="";$("pantryRecipe").value="";renderPantry();
+    $("pantryQuantity").value="";$("pantryOpeningCount").value="";$("pantryNote").value="";$("pantryRecipe").value="";renderPantry();
   });
   $("pantryList").addEventListener("click",e=>{
     const button=e.target.closest("[data-pantry-delete]");if(!button)return;
@@ -123,6 +147,7 @@ export function initPreservation(){
     pantry=pantry.filter(x=>x.id!==button.dataset.pantryDelete);
     savePantry();renderPantry();
   });
+  installPantryStockEvents($("pantryList"),{getRecords:currentPantryRecords,updateStandalone:writeStandaloneStock,refresh:renderPantry,notify:text=>$("pantryStockMessage").textContent=text});
   $("pantryExport").addEventListener("click",()=>{
     const payload={app:"AlmanacPhi",kind:"preservation-pantry",version:2,exportedAt:new Date().toISOString(),pantry,linkedPantry:readLinkedPantry()};
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});

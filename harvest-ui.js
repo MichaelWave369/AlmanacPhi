@@ -1,6 +1,7 @@
 import {CROPS,CROP_BY_ID} from "./crop-data.js";
 import {HARVEST_UNITS,HARVEST_USES,validHarvest,validAllocation,checkLedger,canAllocate,remainingBase,fromBase,formatHarvestAmount,cropAvailability,safeRecipeSource,validLinkedPantry} from "./harvest-data.js";
 import {preservationForCrop,PRESERVATION_BY_ID} from "./preservation-data.js";
+import {createPantryStock,validPantryStock,remainingContainers} from "./pantry-stock.js";
 import {showHarvestKitchen} from "./kitchen-ui.js";
 
 const $=id=>document.getElementById(id);
@@ -150,6 +151,27 @@ function exportLedger(){
   download("almanacphi-harvest-"+today()+".json",
     JSON.stringify({app:"AlmanacPhi",kind:"harvest-ledger",version:1,exportedAt:new Date().toISOString(),lots,allocations},null,2));
 }
+// A linked batch's stock history is persisted inside the same harvest ledger
+// that owns its original allocation. The stored source is read afresh before
+// updating, and the new snapshot is persisted before in-memory state changes.
+export function updateLinkedPantryStock(allocationId,nextStock){
+  if(storageError||!validPantryStock(nextStock))return {ok:false,message:"Invalid stock history or harvest storage unavailable."};
+  try{
+    const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(!saved||!checkLedger(saved.lots,saved.allocations))return {ok:false,message:"Stored harvest ledger needs review before editing."};
+    const index=saved.allocations.findIndex(x=>x.id===allocationId);
+    if(index<0||!saved.allocations[index].pantry)return {ok:false,message:"Linked pantry batch was not found."};
+    const nextAllocations=saved.allocations.map((allocation,i)=>
+      i===index?{...allocation,pantry:{...allocation.pantry,stock:nextStock}}:allocation
+    );
+    if(!checkLedger(saved.lots,nextAllocations))return {ok:false,message:"Linked stock update failed harvest integrity validation."};
+    localStorage.setItem(KEY,JSON.stringify({...saved,allocations:nextAllocations}));
+    lots=saved.lots;allocations=nextAllocations;
+    renderAll();
+    window.dispatchEvent(new CustomEvent("almanacphi:harvest-updated"));
+    return {ok:true};
+  }catch(e){console.warn("Linked pantry stock update failed",e);return {ok:false,message:"Could not save to this browser. No stock change was recorded."};}
+}
 export function initHarvest(){
   cropOptions();plantOptions();
   $("harvestDate").value=today();$("harvestUseDate").value=today();
@@ -186,10 +208,17 @@ export function initHarvest(){
       if(!safeRecipeSource(recipe)){
         status("The source recipe must be a valid HTTPS URL, or empty for non-canning methods.");return;
       }
+      const countText=$("harvestPantryOpeningCount").value.trim();
+      let stock;
+      if(countText){
+        try{stock=createPantryStock(Number(countText));}
+        catch(e){status("Tracked containers must be a positive whole number up to 100,000.");return;}
+      }
       entry.pantry={
         method:$("harvestPantryMethod").value,quantity:$("harvestPantryQuantity").value.trim().slice(0,80),
         location:$("harvestPantryLocation").value.trim().slice(0,100),
-        note:$("harvestPantryNote").value.trim().slice(0,500),recipe:recipe.slice(0,500)
+        note:$("harvestPantryNote").value.trim().slice(0,500),recipe:recipe.slice(0,500),
+        ...(stock?{stock}:{})
       };
       if(!validLinkedPantry(entry,lot)){
         status("The linked pantry batch needs a valid method, quantity, location and a tested-recipe HTTPS link for canning. A link does not prove safety.");return;
@@ -200,7 +229,7 @@ export function initHarvest(){
     const linked=!!entry.pantry;
     status(save()?linked?"Harvest transferred and linked pantry batch recorded. Neither record certifies food safety.":"Use recorded. Available harvest updated.":"Allocation recorded for this session; browser storage is unavailable.");
     $("harvestUseAmount").value="";$("harvestUseNote").value="";
-    if(linked){$("harvestPantryQuantity").value="";$("harvestPantryLocation").value="";$("harvestPantryRecipe").value="";$("harvestPantryNote").value="";}
+    if(linked){$("harvestPantryQuantity").value="";$("harvestPantryLocation").value="";$("harvestPantryOpeningCount").value="";$("harvestPantryRecipe").value="";$("harvestPantryNote").value="";}
     renderAll();
   });
   $("harvestLots").addEventListener("click",e=>{

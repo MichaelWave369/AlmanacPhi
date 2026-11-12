@@ -148,3 +148,22 @@
 .pantry-harvest-link{font-size:11px;align-self:start;color:var(--forest);font-weight:800;white-space:nowrap;text-underline-offset:2px}
 .linked-pantry-entry{border-color:#b3cfae;background:#f5faf1}
 @media(max-width:560px){.harvest-pantry-transfer{padding:12px}.linked-pantry-entry{flex-direction:column}}
+
+
+/* Explicit Pantry Stock Ledger v0.6 */
+.pantry-count-hint{font-size:11px;line-height:1.55;color:var(--muted);margin:7px 0 10px}
+.pantry-stock-box{background:#f1f6ee;border:1px solid #d5e4cb;border-radius:8px;padding:13px;margin:14px 0 2px}
+.pantry-stock-box p{font-size:12px!important;margin:0 0 10px!important;color:#42644c!important}
+.pantry-count-form{display:flex;align-items:end;flex-wrap:wrap;gap:8px;margin:8px 0}
+.pantry-count-form label{display:flex;flex-direction:column;gap:5px;font-size:10px;font-weight:800;color:#47614b;flex:1 1 115px}
+.pantry-count-form label:nth-child(4){flex:2 1 170px}
+.pantry-count-form input,.pantry-count-form select{min-height:36px;width:100%;max-width:100%;border:1px solid #c9d7c6;border-radius:6px;background:white;padding:6px 8px;color:var(--ink);font-size:12px}
+.pantry-count-form button,.pantry-last-action button{padding:10px 12px;border:1px solid #69956b;background:#e0ead9;color:#284a2e;border-radius:6px;font-size:11px;font-weight:850;white-space:nowrap}
+.pantry-count-form button:hover,.pantry-last-action button:hover{background:#cfdfc6}
+.pantry-count-form button:disabled{opacity:.45;cursor:not-allowed}
+.pantry-last-action{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0}
+.pantry-last-action span{font-size:11px;color:#47614b;overflow-wrap:anywhere}
+.pantry-stock-error{color:#a8442a!important;font-weight:800}
+.pantry-list .pantry-entry>div{min-width:0;flex:1}
+.pantry-entry .pantry-harvest-link{flex:none}
+@media(max-width:600px){.pantry-last-action{align-items:start;flex-direction:column}.pantry-count-form{flex-direction:column;align-items:stretch}.pantry-count-form label{width:100%;flex:auto}}
